@@ -11,6 +11,8 @@ using namespace std;
 #include <time.h>
 #include <fstream>
 #include <sstream>
+#include <cstdlib>
+#include <cstdio>
 
 
 
@@ -92,6 +94,18 @@ int** read_data(string filename, int &dimension) {
 	return NULL;
 }
 
+void permuteTab(int* tab, int len) {
+    int swap_index = 0;
+    int tmp;
+
+    for(int i=0; i<len-1; i++) {
+        swap_index = i + rand() % (len-i);
+        tmp = tab[i];
+        tab[i] = tab[swap_index];
+        tab[swap_index] = tmp;
+    }
+}
+
 
 int main() {
 	double result = measure_time(1);
@@ -105,5 +119,14 @@ int main() {
 		cout << endl;
 	}
 
+
+	srand(time(NULL));
+	int* tab = new int[5];
+	for(int i=0; i<5; i++)
+		tab[i] = i;
+
+	permuteTab(tab, 5);
+	for(int i =0; i<5; i++)
+		std::cout << tab[i] << " ";
 	return 0;
 }
