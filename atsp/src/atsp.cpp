@@ -142,9 +142,8 @@ int evaluateOnPositions(int* tab, int i, int j){
 }
 
 
-void simple_heuristics() {
-	
-}
+
+
 
 void greedy_2opt() {
 	showArray(current, length);
@@ -186,6 +185,35 @@ void greedy_2opt() {
 		greedy_2opt();
 	}
 
+}
+
+bool isInArray(int value, int* tab, int size) {
+	bool isInArray = false;
+	for(int i=0; i<size; i++) {
+		if(tab[i] == value)
+			isInArray = true;
+	}
+	return isInArray;
+}
+
+void nearest_neighbour() {
+	for(int i=0; i<length; i++)
+		current[i] = -1;
+
+	int current_city = rand() % length;
+	current[0] = current_city;
+
+	for(int k = 1; k<length; k++) {
+		int current_best_value = 99999999;
+		int current_best_candidate = 0;
+		for(int i=0; i<length; i++) {
+			if(mat[current_city][i] < current_best_value && !isInArray(i, current, length)) {
+				current_best_value = mat[current_city][i];
+				current_best_candidate = i;
+			} 
+		}
+		current[k] = current_best_candidate;
+	}
 }
 
 
@@ -298,7 +326,7 @@ int main() {
 	for (int i= 0; i < 5; i++) {
 		mat[i] = new int[5];
 		for (int j =0; j < 5; j++) {
-			mat[i][j] = i*j;
+			mat[i][j] = i+j+(10%(j+3));
 		}
 	}
 	length = 5;
@@ -317,5 +345,11 @@ int main() {
 	doExperiment(1, steepest_2opt);
 	showArray(current, length);
 	cout << "distance: " << best_result << endl;
+
+	nearest_neighbour();
+	cout << "distance heuristics " << getTotalPathLength(current) << endl;
+	showArray(current, length);
+	cout << endl;
+	showMat();
 	return 0;
 }
