@@ -21,6 +21,7 @@ int length = 0;
 int best_result = 0;
 
 using namespace std;
+typedef void( * algorytmT )();
 
 
 // UTILS
@@ -58,7 +59,7 @@ int** read_data(string filename, int &dimension) {
 	if (data.is_open()) {
 		while (!data.eof() && (dimension == -1)) {
 			getline(data, line);
-			if ((offset = line.find("dimension:", 0)) != string::npos) {
+			if ((offset = line.find("DIMENSION:", 0)) != string::npos) {
 				istringstream iss;
 				iss.str(line.substr(offset + 10));
 				iss >> dimension;
@@ -145,6 +146,48 @@ void simple_heuristics() {
 	
 }
 
+void greedy_2opt() {
+	showArray(current, length);
+	int delta = 0;
+	int value = 0;
+	bool better_result = false;
+	int start_index = rand() % (length-1);
+	int i = start_index;
+	do {
+		cout << "i: " << i << ", " << endl;
+		int j = i+1;
+		while ((j < length) && (!better_result)) {
+			swap(i, j);
+			int eval_old = evaluateOnPositions(current, i, j);
+			int eval = evaluateOnPositions(candidate, i, j);
+			value = eval - eval_old;
+			if (value < delta) {
+				cout << "!!!" << value << " " << delta << endl;
+				delta = value;
+				for(int k=0; k < length; k++) {
+					best[k] = candidate[k];
+				}
+				better_result = true;
+			}
+			j++;
+		}
+		i = (i + 1) % (length-1);
+	} while((i != start_index) && (!better_result));
+
+	if (delta < 0) {
+		int temp;//current;
+		for (int i = 0; i < length; i++) {
+			temp = current[i];
+			current[i] = best[i];
+			best[i] = temp;
+		}
+		best_result += delta;
+		showArray(current, length);
+		greedy_2opt();
+	}
+
+}
+
 
 void steepest_2opt(){
 	cout << "iteracja" << endl;
@@ -196,15 +239,14 @@ int getTotalPathLength(int* tab){
 }
 
 // main function of experiments
-double doExperiment(double accuracy) {
+double doExperiment(double accuracy, algorytmT algorytm) {
 	double prec = 1;
 	clock_t start, measure;
 	start = clock(); // bie¿¹cy czas systemowy w ms
 	int i = 0;
 	do {
 		//example function
-
-
+		algorytm();
 		measure = clock() - start;
 		i++;
 	} while((measure < prec/accuracy) || (i <= 10));
@@ -235,9 +277,9 @@ void localSearch() {
 
 int random_experiment(int* array, int size) {
 	permuteTab(array, size);
-	return getTotalPathLength(array, size);
+	return getTotalPathLength(array);
 }
-
+/*
 int simple_heuristics(int** array, int** mat, int size, int currentPoint) {
 	array[0] = currentPoint;
 	int bestCandidate;
@@ -247,13 +289,10 @@ int simple_heuristics(int** array, int** mat, int size, int currentPoint) {
 		}
 	}
 }
-
+*/
 
 
 int main() {
-	double result = doExperiment(1);
-	cout << result << " ms"<< endl; // prints !!!Hello World!!!
-	
 	init();
 	mat = new int*[5];
 	for (int i= 0; i < 5; i++) {
@@ -275,7 +314,7 @@ int main() {
 	}
 	best_result = getTotalPathLength(current);
 	cout << "distance: " << best_result << endl;
-	steepest_2opt();
+	doExperiment(1, steepest_2opt);
 	showArray(current, length);
 	cout << "distance: " << best_result << endl;
 	return 0;
