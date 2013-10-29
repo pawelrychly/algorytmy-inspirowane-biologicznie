@@ -7,7 +7,6 @@
 //============================================================================
 
 #include <iostream>
-using namespace std;
 #include <time.h>
 #include <fstream>
 #include <sstream>
@@ -21,6 +20,10 @@ int** mat;
 int length = 0;
 int best_result = 0;
 
+using namespace std;
+
+
+// UTILS
 void showArray(int* tab, int length) {
 	for(int i=0; i< length; i++) {
 		cout << tab[i] << ", ";
@@ -28,8 +31,28 @@ void showArray(int* tab, int length) {
 	cout << endl;
 }
 
-int** read_data(string filename, int &dimension) {
-	dimension = -1;
+void copy_arrays(int* src, int* dest, int size) {
+	for(int i=0; i<size; i++) {
+		dest[i] = src[i];
+	}
+}
+
+void showMat() {
+	for (int i =0; i < length; i++) {
+		for ( int j = 0; j < length; j++) {
+			cout << mat[i][j]<< " ";
+		}
+		cout << endl;
+	}
+}
+
+int random_experiment(int* array, int size) {
+	permuteTab(array, size);
+	return getTotalPathLength(array, size);
+}
+
+int** read_data(string filename, int &dimmension) {
+	dimmension = -1;
 	int** matrix;
 	ifstream data;
 	string line = "";
@@ -38,21 +61,21 @@ int** read_data(string filename, int &dimension) {
 	data.open(filename.c_str());
 
 	if (data.is_open()) {
-		while (!data.eof() && (dimension == -1)) {
+		while (!data.eof() && (dimmension == -1)) {
 			getline(data, line);
-			if ((offset = line.find("DIMENSION:", 0)) != string::npos) {
+			if ((offset = line.find("dimmension:", 0)) != string::npos) {
 				istringstream iss;
 				iss.str(line.substr(offset + 10));
-				iss >> dimension;
-				matrix = new int*[dimension];
-				for (int i = 0; i < dimension; i++) {
-					matrix[i] = new int[dimension];
+				iss >> dimmension;
+				matrix = new int*[dimmension];
+				for (int i = 0; i < dimmension; i++) {
+					matrix[i] = new int[dimmension];
 				}
 			}
 		}
 
 		bool reading_matrix = false;
-		while (!data.eof() && (dimension > 0) && (!reading_matrix)) {
+		while (!data.eof() && (dimmension > 0) && (!reading_matrix)) {
 			getline(data, line);
 			if ((offset = line.find("EDGE_WEIGHT_SECTION", 0)) != string::npos) {
 				reading_matrix = true;
@@ -73,7 +96,7 @@ int** read_data(string filename, int &dimension) {
 			while(linestream >> value)
 			{
 				matrix[x][y] = value;
-				x = (x+1) % dimension;
+				x = (x+1) % dimmension;
 				if (x == 0) {
 					y++;
 				}
@@ -89,6 +112,7 @@ int** read_data(string filename, int &dimension) {
 	return NULL;
 }
 
+
 void init() {
 	srand(time(NULL));
 	int l = 0;
@@ -96,10 +120,11 @@ void init() {
 	length = l;
 	best = new int[length];
 	current = new int[length];
+	candidate = new int[length];
+
 	for(int i = 0; i < length; i++) {
 		current[i] = i;
 	}
-	candidate = new int[length];
 }
 
 void swap(int i, int j) {
@@ -111,16 +136,8 @@ void swap(int i, int j) {
 	candidate[j] = current[i];
 }
 
-void showMat() {
-	for (int i =0; i < length; i++) {
-		for ( int j = 0; j < length; j++) {
-			cout << mat[i][j]<< " ";
-		}
-		cout << endl;
-	}
-}
 
-int evaluate(int* tab, int i, int j){
+int evaluateOnPositions(int* tab, int i, int j){
 	int prev_j = (j - 1) < 0 ? length-1 : (j-1);
 	int prev_i = (i - 1) < 0 ? length-1 : (i-1);
 	int evaluation = mat[tab[prev_i]][tab[i]] + mat[tab[i]][tab[(i + 1)%length] ] +
@@ -129,21 +146,24 @@ int evaluate(int* tab, int i, int j){
 }
 
 
+void simple_heuristics() {
 
-void stepest_2opt(){
+}
+
+
+void steepest_2opt(){
 	cout << "iteracja" << endl;
 	showArray(current, length);
 	int delta = 0;
 	int value = 0;
 	for (int i = 0; i < length-1; i++ ) {
 		for(int j = i+1; j < length; j++) {
-
 			swap(i, j);
-			int eval_old = evaluate(current, i, j);
-			int eval = evaluate(candidate, i, j);
+			int eval_old = evaluateOnPositions(current, i, j);
+			int eval = evaluateOnPositions(candidate, i, j);
 			value = eval - eval_old;
+			
 			if (value < delta) {
-				cout << "!!!" << value << " " << delta << endl;
 				delta = value;
 				for(int k=0; k < length; k++) {
 					best[k] = candidate[k];
@@ -165,12 +185,14 @@ void stepest_2opt(){
 		best = temp;
 		best_result -= delta;*/
 		best_result += delta;
-		stepest_2opt();
+		steepest_2opt();
 	}
 
 }
 
-int initDistance(int* tab){
+
+// returns total length of path
+int getTotalPathLength(int* tab){
 	int sum = 0;
 	for (int i = 0; i < length; i++) {
 		sum += mat[tab[i]][tab[(i+1) % length]];
@@ -178,8 +200,8 @@ int initDistance(int* tab){
 	return sum;
 }
 
-
-double measure_time(double accuracy) {
+// main function of experiments
+double doExperiment(double accuracy) {
 	double prec = 1;
 	clock_t start, measure;
 	start = clock(); // bie¿¹cy czas systemowy w ms
@@ -197,13 +219,14 @@ double measure_time(double accuracy) {
 }
 
 
-
+// makes "in place" random array permutation
 void permuteTab(int* tab, int len) {
     int swap_index = 0;
     int tmp;
 
     for(int i=0; i<len-1; i++) {
         swap_index = i + rand() % (len-i);
+        
         tmp = tab[i];
         tab[i] = tab[swap_index];
         tab[swap_index] = tmp;
@@ -211,16 +234,15 @@ void permuteTab(int* tab, int len) {
 }
 
 void localSearch() {
-
 	permuteTab(current, length);
 }
 
 
 
 int main() {
-	double result = measure_time(1);
+	double result = doExperiment(1);
 	cout << result << " ms"<< endl; // prints !!!Hello World!!!
-
+	
 	init();
 	mat = new int*[5];
 	for (int i= 0; i < 5; i++) {
@@ -232,7 +254,7 @@ int main() {
 	length = 5;
 	permuteTab(current, length);
 	showArray(current, length);
-	int distance = initDistance(current);
+	int distance = getTotalPathLength(current);
 	cout << distance;
 	for (int i = 0; i < length; i++) {
 		for (int j = 0; j < length; j++) {
@@ -240,9 +262,9 @@ int main() {
 		}
 		cout << endl;
 	}
-	best_result = initDistance(current);
+	best_result = getTotalPathLength(current);
 	cout << "distance: " << best_result << endl;
-	stepest_2opt();
+	steepest_2opt();
 	showArray(current, length);
 	cout << "distance: " << best_result << endl;
 	return 0;
