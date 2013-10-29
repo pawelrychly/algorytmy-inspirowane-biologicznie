@@ -1,6 +1,6 @@
 //============================================================================
 // Name        : atsp.cpp
-// Author      : Pawe³ Rych³y Dawid Wiœniewski
+// Author      : PaweÂ³ RychÂ³y Dawid WiÅ“niewski
 // Version     :
 // Copyright   : Your copyright notice
 // Description : Hello World in C++, Ansi-style
@@ -46,13 +46,8 @@ void showMat() {
 	}
 }
 
-int random_experiment(int* array, int size) {
-	permuteTab(array, size);
-	return getTotalPathLength(array, size);
-}
-
-int** read_data(string filename, int &dimmension) {
-	dimmension = -1;
+int** read_data(string filename, int &dimension) {
+	dimension = -1;
 	int** matrix;
 	ifstream data;
 	string line = "";
@@ -61,21 +56,21 @@ int** read_data(string filename, int &dimmension) {
 	data.open(filename.c_str());
 
 	if (data.is_open()) {
-		while (!data.eof() && (dimmension == -1)) {
+		while (!data.eof() && (dimension == -1)) {
 			getline(data, line);
-			if ((offset = line.find("dimmension:", 0)) != string::npos) {
+			if ((offset = line.find("dimension:", 0)) != string::npos) {
 				istringstream iss;
 				iss.str(line.substr(offset + 10));
-				iss >> dimmension;
-				matrix = new int*[dimmension];
-				for (int i = 0; i < dimmension; i++) {
-					matrix[i] = new int[dimmension];
+				iss >> dimension;
+				matrix = new int*[dimension];
+				for (int i = 0; i < dimension; i++) {
+					matrix[i] = new int[dimension];
 				}
 			}
 		}
 
 		bool reading_matrix = false;
-		while (!data.eof() && (dimmension > 0) && (!reading_matrix)) {
+		while (!data.eof() && (dimension > 0) && (!reading_matrix)) {
 			getline(data, line);
 			if ((offset = line.find("EDGE_WEIGHT_SECTION", 0)) != string::npos) {
 				reading_matrix = true;
@@ -96,7 +91,7 @@ int** read_data(string filename, int &dimmension) {
 			while(linestream >> value)
 			{
 				matrix[x][y] = value;
-				x = (x+1) % dimmension;
+				x = (x+1) % dimension;
 				if (x == 0) {
 					y++;
 				}
@@ -147,7 +142,7 @@ int evaluateOnPositions(int* tab, int i, int j){
 
 
 void simple_heuristics() {
-
+	
 }
 
 
@@ -204,7 +199,7 @@ int getTotalPathLength(int* tab){
 double doExperiment(double accuracy) {
 	double prec = 1;
 	clock_t start, measure;
-	start = clock(); // bie¿¹cy czas systemowy w ms
+	start = clock(); // bieÂ¿Â¹cy czas systemowy w ms
 	int i = 0;
 	do {
 		//example function
@@ -235,6 +230,22 @@ void permuteTab(int* tab, int len) {
 
 void localSearch() {
 	permuteTab(current, length);
+}
+
+
+int random_experiment(int* array, int size) {
+	permuteTab(array, size);
+	return getTotalPathLength(array, size);
+}
+
+int simple_heuristics(int** array, int** mat, int size, int currentPoint) {
+	array[0] = currentPoint;
+	int bestCandidate;
+
+	for(int i=1; i<size; i++) { // how many cities to travel to
+		for(int j=0; j<size; j++) { // check 
+		}
+	}
 }
 
 
