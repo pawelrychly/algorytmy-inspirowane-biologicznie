@@ -18,7 +18,7 @@ Debug/
 .settings/
 .cproject
 
-
+#Latex
 *.aux
 *.glo
 *.idx
