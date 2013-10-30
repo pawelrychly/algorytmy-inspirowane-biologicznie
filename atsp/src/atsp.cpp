@@ -398,7 +398,7 @@ int simple_heuristics(int** array, int** mat, int size, int currentPoint) {
 int main() {
 	init();
 	//
-	mat = new int*[5];
+	/*mat = new int*[5];
 	for (int i= 0; i < 5; i++) {
 		mat[i] = new int[5];
 		for (int j =0; j < 5; j++) {
@@ -408,14 +408,15 @@ int main() {
 		}
 	}
 	length = 5;
+	*/
 	//
 
 	double time = doExperiment(1, greedy_2opt);
-	cout << "Greedy Time: " << time << endl;
+	cout << "Greedy Time: " << time << "Best result: " << best_result << endl;
 	time = doExperiment(1, steepest_2opt);
-	cout << "Steepest Time: " << time << endl;
+	cout << "Steepest Time: " << time << "Best result: " << best_result << endl;
 	time_of_walker = time;
 	time = doExperiment(1, random_walker_2opt);
-	cout << "time of walker Time: " << time << endl;
+	cout << "time of walker Time: " << time << "Best result: " << best_result << endl;
 	return 0;
 }
