@@ -19,6 +19,7 @@ int* candidate;
 int** mat;
 int length = 0;
 int best_result = 0;
+clock_t time_of_walker = 1000;
 
 using namespace std;
 typedef void( * algorytmT )();
@@ -136,8 +137,18 @@ void swap(int i, int j) {
 int evaluateOnPositions(int* tab, int i, int j){
 	int prev_j = (j - 1) < 0 ? length-1 : (j-1);
 	int prev_i = (i - 1) < 0 ? length-1 : (i-1);
-	int evaluation = mat[tab[prev_i]][tab[i]] + mat[tab[i]][tab[(i + 1)%length] ] +
-			mat[tab[prev_j]][tab[j]] + mat[tab[j]][tab[(j + 1)%length] ];
+	int next_j = (j + 1) % length;
+	int next_i = (i + 1) % length;
+
+	int evaluation = mat[tab[prev_i]][tab[i]] + mat[tab[i]][tab[next_i] ] +
+			mat[tab[prev_j]][tab[j]] + mat[tab[j]][tab[next_j] ];
+
+	if (i == next_j) {
+		evaluation = evaluation - mat[tab[j]][tab[i]];
+	} else if(j == next_i){
+		evaluation = evaluation - mat[tab[i]][tab[j]];
+	}
+
 	return evaluation;
 }
 
@@ -188,15 +199,53 @@ void greedy_2opt() {
 
 }
 
+void random_walker_2opt() {
+	for(int k=0; k < length; k++) {
+		best[k] = current[k];
+	}
+	int result = best_result;
+	cout << "best result" << result << endl;
+	int value = 0;
+	clock_t start, measure;
+	start = clock();
+
+	do {
+		int i = rand() % (length);
+		int j = i;
+		do {
+			j = rand() % (length);
+		} while(j == i);
+
+		swap(i, j);
+		int eval_old = evaluateOnPositions(current, i, j);
+		int eval = evaluateOnPositions(candidate, i, j);
+		value = eval - eval_old;
+		result += value;
+		if (result < best_result) {
+			for(int k=0; k < length; k++) {
+				best[k] = candidate[k];
+			}
+			best_result = result;
+		}
+		for (int l = 0; l < length; l++) {
+			current[l] = candidate[l];
+		}
+		measure = clock() - start;
+	} while (measure < time_of_walker);
+	for(int k=0; k < length; k++) {
+		current[k] = best[k];
+	}
+}
 
 void steepest_2opt(){
 	cout << "iteracja" << endl;
-	showArray(current, length);
+
 	int delta = 0;
 	int value = 0;
 	for (int i = 0; i < length-1; i++ ) {
 		for(int j = i+1; j < length; j++) {
 			swap(i, j);
+
 			int eval_old = evaluateOnPositions(current, i, j);
 			int eval = evaluateOnPositions(candidate, i, j);
 			value = eval - eval_old;
@@ -207,8 +256,12 @@ void steepest_2opt(){
 					best[k] = candidate[k];
 				}
 			}
-			cout << "eval: " << eval << " eval_old: " << eval_old << " value: " << value << " delta: " << delta << "best_r: " << best_result<< endl;
+			showArray(current, length);
 			showArray(candidate, length);
+
+			cout << "eval: " << eval << " eval_old: " << eval_old << " value: " << value << " delta: " << delta << "best_r: " << best_result<< endl;
+
+			//showArray(candidate, length);
 			//cin.get();
 		}
 	}
@@ -298,6 +351,7 @@ int main() {
 	for (int i= 0; i < 5; i++) {
 		mat[i] = new int[5];
 		for (int j =0; j < 5; j++) {
+			//mat[i][j] = i+j+(10%(j+3));
 			mat[i][j] = i*j;
 		}
 	}
@@ -313,8 +367,10 @@ int main() {
 		cout << endl;
 	}
 	best_result = getTotalPathLength(current);
-	cout << "distance: " << best_result << endl;
-	doExperiment(1, steepest_2opt);
+	showArray(current, length);
+	cout << "init distance: " << best_result << endl;
+	doExperiment(1, greedy_2opt);
+
 	showArray(current, length);
 	cout << "distance: " << best_result << endl;
 	return 0;
