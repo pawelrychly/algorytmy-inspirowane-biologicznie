@@ -330,6 +330,9 @@ int main() {
 		}
 	}
 	length = 5;
+	steepest_2opt();
+
+/*
 	permuteTab(current, length);
 	showArray(current, length);
 	int distance = getTotalPathLength(current);
@@ -345,11 +348,11 @@ int main() {
 	doExperiment(1, steepest_2opt);
 	showArray(current, length);
 	cout << "distance: " << best_result << endl;
-
-	nearest_neighbour();
-	cout << "distance heuristics " << getTotalPathLength(current) << endl;
-	showArray(current, length);
-	cout << endl;
-	showMat();
+	*/
+	//nearest_neighbour();
+	//cout << "distance heuristics " << getTotalPathLength(current) << endl;
+	//showArray(current, length);
+	//cout << endl;
+	//showMat();
 	return 0;
 }
