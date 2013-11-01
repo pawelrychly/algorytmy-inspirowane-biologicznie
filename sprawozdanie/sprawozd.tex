@@ -1,0 +1,40 @@
+%@descr: wzór sprawozdania, raportu lub pracy - nadaje siê do przeróbek
+%@author: Maciej Komosiñski
+
+\documentclass{article} 
+\usepackage{polski} %moze wymagac dokonfigurowania latexa, ale jest lepszy ni¿ standardowy babel'owy [polish] 
+\usepackage[cp1250]{inputenc} 
+\usepackage[OT4]{fontenc} 
+\usepackage{graphicx,color} %include pdf's (and png's for raster graphics... avoid raster graphics!) 
+\usepackage{url} 
+\usepackage[pdftex,hyperfootnotes=false,pdfborder={0 0 0}]{hyperref} %za wszystkimi pakietami; pdfborder nie wszedzie tak samo zaimplementowane bo specyfikacja nieprecyzyjna; pod miktex'em po prostu nie widac wtedy ramek
+
+
+\input{_ustawienia.tex}
+
+%\title{Sprawozdanie z laboratorium:\\Metaheurystyki i Obliczenia Inspirowane Biologicznie}
+%\author{}
+%\date{}
+
+
+\begin{document}
+
+\input{_tytulowa}
+
+
+
+\section{Wstêp}
+Problem komiwoja¿era opisywany jest czêsto jako problem wêdrownego sprzedawcy zamierzaj¹cego odwiedziæ pewien zbiór miast. Planuj¹c swoj¹ podró¿, usi³uje on znaleŸæ mo¿liwie najkrótsz¹ trasê, która koñczy³aby siê w punkcie startowym. Zak³ada siê, ¿e ka¿de miasto z wyj¹tkiem pocz¹tkowego, powinno zostaæ odwiedzone tylko jeden raz. Przyjmuje siê równie¿, ¿e ka¿da para miast, po³¹czona jest drog¹ o okreœlonej d³ugoœci.  Opis ten stanowi jedynie ilustracjê  ogólniejszego zagadnienia. Zapisuj¹c problem Komiwoja¿era w jêzyku teorii grafów, mo¿na zdefiniowaæ go, jako problem znajdowania takiego cyklu Hamiltona w pe³nym grafie wa¿onym, dla którego suma wag odwiedzonych krawêdzi jest minimalna. W tak zdefiniowanym problemie mo¿na wyró¿niæ Asymetryczny problem Komiwoja¿era (ATSP). Zak³ada siê w nim, ¿e odleg³oœæ pomiêdzy dwoma miastami A i B mo¿e byæ ró¿na w zale¿noœci od tego, czy sprzedawca przemieszcza siê z punktu A do B, czy te¿ w kierunku przeciwnym. Zarówno symetryczna jak i asymetryczna wersja problemu komiwoja¿era znalaz³a bardzo szerokie zastosowanie w praktyce. Wykorzystywana jest nie tylko w dziedzinach zwi¹zanych z transportem. Problem komiwoja¿era stosowany jest miêdzy innymi w produkcji elektroniki, gdzie optymalizuje siê drogê lasera wypalaj¹cego obwody elektroniczne. W sieciach komputerowych zastosowany jest do optymalizacji tras routingu. Niestety opisywany problem, jest problemem o wyk³adniczej z³o¿onoœci obliczeniowej i nale¿y do klasy problemów NP-trudnych.
+\section{Operator s¹siedztwa}
+W zaimplementowanych przez nas algorytmach wykorzystaliœmy operator s¹siedztwa 2-opt. W podejœciu tym, ka¿da permutacja oznaczaj¹ca kolejnoœæ odwiedzanych wierzcho³ków w grafie s¹siaduje z permutacjami utworzonymi poprzez zamianê miejscami dwóch liczb w sekwencji.  
+
+
+
+%%%%%%%%%%%%%%%% literatura %%%%%%%%%%%%%%%%
+
+\bibliography{sprawozd}
+\bibliographystyle{plain}
+
+
+\end{document}
+
