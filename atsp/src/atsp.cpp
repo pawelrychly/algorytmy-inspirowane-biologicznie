@@ -12,6 +12,8 @@
 #include <sstream>
 #include <cstdlib>
 #include <cstdio>
+#include <vector>
+#include <cmath>
 
 int* best;
 int* current;
@@ -54,7 +56,7 @@ int** read_data(string filename, int &dimension) {
 	ifstream data;
 	string line = "";
 	int offset = 0;
-	filename = "../data-atsp/" + filename;
+	//filename = "../data-atsp/" + filename;
 	data.open(filename.c_str());
 
 	if (data.is_open()) {
@@ -124,10 +126,10 @@ void permuteTab(int* tab, int len) {
 }
 
 
-void init() {
+void init(char* path) {
 	srand(time(NULL));
 	int l = 0;
-	mat = read_data("br17.atsp", l);
+	mat = read_data(path, l);
 	length = l;
 	best = new int[length];
 	current = new int[length];
@@ -347,27 +349,47 @@ void steepest_2opt(){
 }
 
 
+double average(vector<double> v)
+{      double sum=0;
+       for(int i=0;i<v.size();i++)
+               sum+=v[i];
+       return (double)sum/v.size();
+}
+double std_dev(vector<double> v, double ave)
+{
+       double E=0;
+       for(int i=0;i<v.size();i++)
+               E+=(v[i] - ave)*(v[i] - ave);
+       return sqrt(1.0/v.size()*E);
+}
+        
+
 
 
 // main function of experiments
-double doExperiment(double accuracy, algorytmT algorytm) {
+double doExperiment(double accuracy, algorytmT algorytm, double &std) {
 	double prec = 1.0;
 	clock_t start;
+	double prev_measure = 0.0;
 	double measure = 0.0;
+	vector<double> results;
 
 	start = clock(); // bie¿¹cy czas systemowy w ms
 	int i = 0;
-	cout << "accuracy: " << accuracy << "prec/accuracy " << prec/accuracy << endl;
+//	cout << "accuracy: " << accuracy << "prec/accuracy " << prec/accuracy << endl;
 	do {
 		//example function
 		reset();
 		algorytm();
 		measure = ((double) (clock() - start))/CLOCKS_PER_SEC;
+		results.push_back(measure - prev_measure);
+		prev_measure = measure;
 		i++;
 	} while((measure < prec/accuracy) || (i <= 10));
 	//long m =(long)(measure);
-	double result = (double) measure / i;
-	return result;
+	//double result = (double) measure / i;
+	std = std_dev(results, average(results));
+	return average(results);
 }
 
 
@@ -395,35 +417,20 @@ int simple_heuristics(int** array, int** mat, int size, int currentPoint) {
 
 
 int main(int argc, char** argv) {
-	init();
-	//
-/*	mat = new int*[5];
-	for (int i= 0; i < 5; i++) {
-		mat[i] = new int[5];
-		for (int j =0; j < 5; j++) {
-			//mat[i][j] = i+j+(10%(j+3));
-			mat[i][j] = i*j;
+	init(argv[1]);
 
-		}
-	}
-	length = 5;
-*/
-	read_data(argv[1], length);
-	cout << length << endl;
-	//
+	double std; 
 
-/*
-	*/
-	double time = doExperiment(1, greedy_2opt);
-	cout << "Greedy: " << time << endl;
-	time = doExperiment(1, steepest_2opt);
-	cout << "Steepest: " << time << endl;
-	time_of_walker = time;
-	time = doExperiment(1, random_walker_2opt);
-	cout << "RW: " << time << endl;
-	time = doExperiment(1, nearest_neighbour);
-	cout << "NN: " << time << endl;
-	time = doExperiment(1, random_experiment);
-	cout << "RANDOM: " << time << endl;
+	double time = doExperiment(1, greedy_2opt, std);
+	cout << "Greedy " << time << " " << std <<  endl;
+	time = doExperiment(1, steepest_2opt, std);
+	cout << "Steepest " << time << " " << std <<   endl;
+	//time_of_walker = time;
+	time = doExperiment(1, random_walker_2opt, std);
+	cout << "RandomWalker " << time << " " << std <<  endl;
+	time = doExperiment(1, nearest_neighbour, std);
+	cout << "NearestNeighbor " << time << " " << std <<  endl;
+	time = doExperiment(1, random_experiment, std);
+	cout << "Random " << time << " " << std <<  endl;
 	return 0;
 }
