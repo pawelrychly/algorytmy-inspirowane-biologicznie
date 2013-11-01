@@ -19,6 +19,7 @@ int* candidate;
 int** mat;
 int length = 0;
 int best_result = 0;
+float time_of_walker = 1;
 
 using namespace std;
 typedef void( * algorytmT )();
@@ -108,6 +109,20 @@ int** read_data(string filename, int &dimension) {
 	return NULL;
 }
 
+// makes "in place" random array permutation
+void permuteTab(int* tab, int len) {
+    int swap_index = 0;
+    int tmp;
+
+    for(int i=0; i<len-1; i++) {
+        swap_index = i + rand() % (len-i);
+
+        tmp = tab[i];
+        tab[i] = tab[swap_index];
+        tab[swap_index] = tmp;
+    }
+}
+
 
 void init() {
 	srand(time(NULL));
@@ -123,6 +138,25 @@ void init() {
 	}
 }
 
+// returns total length of path
+int getTotalPathLength(int* tab){
+	int sum = 0;
+	for (int i = 0; i < length; i++) {
+		sum += mat[tab[i]][tab[(i+1) % length]];
+	}
+	return sum;
+}
+
+void reset() {
+	for(int i = 0; i < length; i++) {
+		best[i] = 0;
+		current[i] = i;
+		candidate[i] = 0;
+	}
+	permuteTab(current, length);
+	best_result = getTotalPathLength(current);
+}
+
 void swap(int i, int j) {
 //zapewnic zeby candidate == old
 	for (int k=0; k < length; k++) {
@@ -136,8 +170,18 @@ void swap(int i, int j) {
 int evaluateOnPositions(int* tab, int i, int j){
 	int prev_j = (j - 1) < 0 ? length-1 : (j-1);
 	int prev_i = (i - 1) < 0 ? length-1 : (i-1);
-	int evaluation = mat[tab[prev_i]][tab[i]] + mat[tab[i]][tab[(i + 1)%length] ] +
-			mat[tab[prev_j]][tab[j]] + mat[tab[j]][tab[(j + 1)%length] ];
+	int next_j = (j + 1) % length;
+	int next_i = (i + 1) % length;
+
+	int evaluation = mat[tab[prev_i]][tab[i]] + mat[tab[i]][tab[next_i] ] +
+			mat[tab[prev_j]][tab[j]] + mat[tab[j]][tab[next_j] ];
+
+	if (i == next_j) {
+		evaluation = evaluation - mat[tab[j]][tab[i]];
+	} else if(j == next_i){
+		evaluation = evaluation - mat[tab[i]][tab[j]];
+	}
+
 	return evaluation;
 }
 
@@ -146,14 +190,14 @@ int evaluateOnPositions(int* tab, int i, int j){
 
 
 void greedy_2opt() {
-	showArray(current, length);
+	//showArray(current, length);
 	int delta = 0;
 	int value = 0;
 	bool better_result = false;
 	int start_index = rand() % (length-1);
 	int i = start_index;
 	do {
-		cout << "i: " << i << ", " << endl;
+		//cout << "i: " << i << ", " << endl;
 		int j = i+1;
 		while ((j < length) && (!better_result)) {
 			swap(i, j);
@@ -161,7 +205,7 @@ void greedy_2opt() {
 			int eval = evaluateOnPositions(candidate, i, j);
 			value = eval - eval_old;
 			if (value < delta) {
-				cout << "!!!" << value << " " << delta << endl;
+				//cout << "!!!" << value << " " << delta << endl;
 				delta = value;
 				for(int k=0; k < length; k++) {
 					best[k] = candidate[k];
@@ -181,10 +225,50 @@ void greedy_2opt() {
 			best[i] = temp;
 		}
 		best_result += delta;
-		showArray(current, length);
+		//showArray(current, length);
 		greedy_2opt();
 	}
 
+}
+
+
+void random_walker_2opt() {
+	for(int k=0; k < length; k++) {
+		best[k] = current[k];
+	}
+	int result = best_result;
+	//cout << "best result" << result << endl;
+	int value = 0;
+	clock_t start;
+	double measure = 0.0;
+	start = clock();
+
+	do {
+		int i = rand() % (length);
+		int j = i;
+		do {
+			j = rand() % (length);
+		} while(j == i);
+
+		swap(i, j);
+		int eval_old = evaluateOnPositions(current, i, j);
+		int eval = evaluateOnPositions(candidate, i, j);
+		value = eval - eval_old;
+		result += value;
+		if (result < best_result) {
+			for(int k=0; k < length; k++) {
+				best[k] = candidate[k];
+			}
+			best_result = result;
+		}
+		for (int l = 0; l < length; l++) {
+			current[l] = candidate[l];
+		}
+		measure = ((double) (clock() - start))/CLOCKS_PER_SEC;
+	} while (measure < time_of_walker);
+	for(int k=0; k < length; k++) {
+		current[k] = best[k];
+	}
 }
 
 bool isInArray(int value, int* tab, int size) {
@@ -217,14 +301,16 @@ void nearest_neighbour() {
 }
 
 
+
 void steepest_2opt(){
-	cout << "iteracja" << endl;
-	showArray(current, length);
+	//cout << "iteracja" << endl;
+
 	int delta = 0;
 	int value = 0;
 	for (int i = 0; i < length-1; i++ ) {
 		for(int j = i+1; j < length; j++) {
 			swap(i, j);
+
 			int eval_old = evaluateOnPositions(current, i, j);
 			int eval = evaluateOnPositions(candidate, i, j);
 			value = eval - eval_old;
@@ -235,8 +321,12 @@ void steepest_2opt(){
 					best[k] = candidate[k];
 				}
 			}
-			cout << "eval: " << eval << " eval_old: " << eval_old << " value: " << value << " delta: " << delta << "best_r: " << best_result<< endl;
-			showArray(candidate, length);
+			//showArray(current, length);
+			//showArray(candidate, length);
+
+			//cout << "eval: " << eval << " eval_old: " << eval_old << " value: " << value << " delta: " << delta << "best_r: " << best_result<< endl;
+
+			//showArray(candidate, length);
 			//cin.get();
 		}
 	}
@@ -257,55 +347,39 @@ void steepest_2opt(){
 }
 
 
-// returns total length of path
-int getTotalPathLength(int* tab){
-	int sum = 0;
-	for (int i = 0; i < length; i++) {
-		sum += mat[tab[i]][tab[(i+1) % length]];
-	}
-	return sum;
-}
+
 
 // main function of experiments
 double doExperiment(double accuracy, algorytmT algorytm) {
-	double prec = 1;
-	clock_t start, measure;
+	double prec = 1.0;
+	clock_t start;
+	double measure = 0.0;
+
 	start = clock(); // bie¿¹cy czas systemowy w ms
 	int i = 0;
+	cout << "accuracy: " << accuracy << "prec/accuracy " << prec/accuracy << endl;
 	do {
 		//example function
+		reset();
 		algorytm();
-		measure = clock() - start;
+		measure = ((double) (clock() - start))/CLOCKS_PER_SEC;
 		i++;
 	} while((measure < prec/accuracy) || (i <= 10));
-	long m =(long)(measure);
-	double result = (double) m / i;
+	//long m =(long)(measure);
+	double result = (double) measure / i;
 	return result;
 }
 
 
-// makes "in place" random array permutation
-void permuteTab(int* tab, int len) {
-    int swap_index = 0;
-    int tmp;
 
-    for(int i=0; i<len-1; i++) {
-        swap_index = i + rand() % (len-i);
-        
-        tmp = tab[i];
-        tab[i] = tab[swap_index];
-        tab[swap_index] = tmp;
-    }
-}
 
 void localSearch() {
 	permuteTab(current, length);
 }
 
-
-int random_experiment(int* array, int size) {
-	permuteTab(array, size);
-	return getTotalPathLength(array);
+void random_experiment() {
+	permuteTab(candidate, length);
+	//return getTotalPathLength(candidate);
 }
 /*
 int simple_heuristics(int** array, int** mat, int size, int currentPoint) {
@@ -320,39 +394,36 @@ int simple_heuristics(int** array, int** mat, int size, int currentPoint) {
 */
 
 
-int main() {
+int main(int argc, char** argv) {
 	init();
-	mat = new int*[5];
+	//
+/*	mat = new int*[5];
 	for (int i= 0; i < 5; i++) {
 		mat[i] = new int[5];
 		for (int j =0; j < 5; j++) {
-			mat[i][j] = i+j+(10%(j+3));
+			//mat[i][j] = i+j+(10%(j+3));
+			mat[i][j] = i*j;
+
 		}
 	}
 	length = 5;
-	steepest_2opt();
+*/
+	read_data(argv[1], length);
+	cout << length << endl;
+	//
 
 /*
-	permuteTab(current, length);
-	showArray(current, length);
-	int distance = getTotalPathLength(current);
-	cout << distance;
-	for (int i = 0; i < length; i++) {
-		for (int j = 0; j < length; j++) {
-			cout << mat[j][i] << " ";
-		}
-		cout << endl;
-	}
-	best_result = getTotalPathLength(current);
-	cout << "distance: " << best_result << endl;
-	doExperiment(1, steepest_2opt);
-	showArray(current, length);
-	cout << "distance: " << best_result << endl;
 	*/
-	//nearest_neighbour();
-	//cout << "distance heuristics " << getTotalPathLength(current) << endl;
-	//showArray(current, length);
-	//cout << endl;
-	//showMat();
+	double time = doExperiment(1, greedy_2opt);
+	cout << "Greedy: " << time << endl;
+	time = doExperiment(1, steepest_2opt);
+	cout << "Steepest: " << time << endl;
+	time_of_walker = time;
+	time = doExperiment(1, random_walker_2opt);
+	cout << "RW: " << time << endl;
+	time = doExperiment(1, nearest_neighbour);
+	cout << "NN: " << time << endl;
+	time = doExperiment(1, random_experiment);
+	cout << "RANDOM: " << time << endl;
 	return 0;
 }
