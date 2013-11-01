@@ -377,10 +377,9 @@ void localSearch() {
 	permuteTab(current, length);
 }
 
-
-int random_experiment(int* array, int size) {
-	permuteTab(array, size);
-	return getTotalPathLength(array);
+void random_experiment() {
+	permuteTab(candidate, length);
+	//return getTotalPathLength(candidate);
 }
 /*
 int simple_heuristics(int** array, int** mat, int size, int currentPoint) {
@@ -395,10 +394,10 @@ int simple_heuristics(int** array, int** mat, int size, int currentPoint) {
 */
 
 
-int main() {
+int main(int argc, char** argv) {
 	init();
 	//
-	/*mat = new int*[5];
+/*	mat = new int*[5];
 	for (int i= 0; i < 5; i++) {
 		mat[i] = new int[5];
 		for (int j =0; j < 5; j++) {
@@ -408,15 +407,23 @@ int main() {
 		}
 	}
 	length = 5;
-	*/
+*/
+	read_data(argv[1], length);
+	cout << length << endl;
 	//
 
+/*
+	*/
 	double time = doExperiment(1, greedy_2opt);
-	cout << "Greedy Time: " << time << "Best result: " << best_result << endl;
+	cout << "Greedy: " << time << endl;
 	time = doExperiment(1, steepest_2opt);
-	cout << "Steepest Time: " << time << "Best result: " << best_result << endl;
+	cout << "Steepest: " << time << endl;
 	time_of_walker = time;
 	time = doExperiment(1, random_walker_2opt);
-	cout << "time of walker Time: " << time << "Best result: " << best_result << endl;
+	cout << "RW: " << time << endl;
+	time = doExperiment(1, nearest_neighbour);
+	cout << "NN: " << time << endl;
+	time = doExperiment(1, random_experiment);
+	cout << "RANDOM: " << time << endl;
 	return 0;
 }
