@@ -151,7 +151,7 @@ int getTotalPathLength(int* tab){
 
 void reset() {
 	for(int i = 0; i < length; i++) {
-		best[i] = 0;
+		best[i] = i;
 		current[i] = i;
 		candidate[i] = 0;
 	}
@@ -284,22 +284,23 @@ bool isInArray(int value, int* tab, int size) {
 
 void nearest_neighbour() {
 	for(int i=0; i<length; i++)
-		current[i] = -1;
+		best[i] = -1;
 
 	int current_city = rand() % length;
-	current[0] = current_city;
+	best[0] = current_city;
 
 	for(int k = 1; k<length; k++) {
 		int current_best_value = 99999999;
 		int current_best_candidate = 0;
 		for(int i=0; i<length; i++) {
-			if(mat[current_city][i] < current_best_value && !isInArray(i, current, length)) {
+			if(mat[current_city][i] < current_best_value && !isInArray(i, best, length)) {
 				current_best_value = mat[current_city][i];
 				current_best_candidate = i;
 			} 
 		}
-		current[k] = current_best_candidate;
+		best[k] = current_best_candidate;
 	}
+	best_result = getTotalPathLength(best);
 }
 
 
@@ -367,20 +368,23 @@ double std_dev(vector<double> v, double ave)
 
 
 // main function of experiments
-double doExperiment(double accuracy, algorytmT algorytm, double &std) {
+double doExperiment(double accuracy, algorytmT algorytm, double &std, int &best) {
 	double prec = 1.0;
 	clock_t start;
 	double prev_measure = 0.0;
 	double measure = 0.0;
 	vector<double> results;
+	int result = 0;
 
 	start = clock(); // bie¿¹cy czas systemowy w ms
 	int i = 0;
-//	cout << "accuracy: " << accuracy << "prec/accuracy " << prec/accuracy << endl;
 	do {
 		//example function
 		reset();
 		algorytm();
+		if(best_result > best)
+			best = best_result;
+
 		measure = ((double) (clock() - start))/CLOCKS_PER_SEC;
 		results.push_back(measure - prev_measure);
 		prev_measure = measure;
@@ -392,45 +396,28 @@ double doExperiment(double accuracy, algorytmT algorytm, double &std) {
 	return average(results);
 }
 
-
-
-
-void localSearch() {
-	permuteTab(current, length);
-}
-
 void random_experiment() {
-	permuteTab(candidate, length);
-	//return getTotalPathLength(candidate);
+	permuteTab(best, length);
+	best_result = getTotalPathLength(best);
 }
-/*
-int simple_heuristics(int** array, int** mat, int size, int currentPoint) {
-	array[0] = currentPoint;
-	int bestCandidate;
-
-	for(int i=1; i<size; i++) { // how many cities to travel to
-		for(int j=0; j<size; j++) { // check 
-		}
-	}
-}
-*/
 
 
 int main(int argc, char** argv) {
 	init(argv[1]);
 
-	double std; 
+	double std;
+	int result; 
 
-	double time = doExperiment(1, greedy_2opt, std);
-	cout << "Greedy " << time << " " << std <<  endl;
-	time = doExperiment(1, steepest_2opt, std);
-	cout << "Steepest " << time << " " << std <<   endl;
+	double time = doExperiment(1, greedy_2opt, std, result);
+	cout << "Greedy " << time << " " << std << " " << result << endl;
+	time = doExperiment(1, steepest_2opt, std, result);
+	cout << "Steepest " << time << " " << std << " " << result <<  endl;
 	//time_of_walker = time;
-	time = doExperiment(1, random_walker_2opt, std);
-	cout << "RandomWalker " << time << " " << std <<  endl;
-	time = doExperiment(1, nearest_neighbour, std);
-	cout << "NearestNeighbor " << time << " " << std <<  endl;
-	time = doExperiment(1, random_experiment, std);
-	cout << "Random " << time << " " << std <<  endl;
+	time = doExperiment(1, random_walker_2opt, std, result);
+	cout << "RandomWalker " << time << " " << std << " " << result << endl;
+	time = doExperiment(1, nearest_neighbour, std, result);
+	cout << "NearestNeighbor " << time << " " << std << " " << result << endl;
+	time = doExperiment(1, random_experiment, std, result);
+	cout << "Random " << time << " " << std << " " << result << endl;
 	return 0;
 }
