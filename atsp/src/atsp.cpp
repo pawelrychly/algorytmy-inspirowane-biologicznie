@@ -375,6 +375,7 @@ double doExperiment(double accuracy, algorytmT algorytm, double &std, int &best)
 	double measure = 0.0;
 	vector<double> results;
 	int result = 0;
+	best = 999999;
 
 	start = clock(); // bie¿¹cy czas systemowy w ms
 	int i = 0;
@@ -382,7 +383,7 @@ double doExperiment(double accuracy, algorytmT algorytm, double &std, int &best)
 		//example function
 		reset();
 		algorytm();
-		if(best_result > best)
+		if(best_result < best)
 			best = best_result;
 
 		measure = ((double) (clock() - start))/CLOCKS_PER_SEC;
