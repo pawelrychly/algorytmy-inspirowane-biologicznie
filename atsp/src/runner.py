@@ -14,8 +14,18 @@ def runProgram(test_file):
 	out, err = p.communicate()
 	return out.split("\n")
 
+
+
+results = open('../best-known-results/results.txt', 'r')
+best = dict()
+for line in results:
+	d = line.split(":")
+	best[d[0].strip()] = int(d[1].strip())
+
 for file in listFiles('../data-atsp/'):
 	print file
+	exact_filename=file[file.rfind('/')+1:file.rfind('.')]
+	#print exact_filename
 	result = runProgram(file)
 	#print result 
 	for line in result:
@@ -23,6 +33,6 @@ for file in listFiles('../data-atsp/'):
 			continue
 		print line
 		splitted = line.split(" ")
-		f = open(splitted[0], 'a')
-		f.write(file + " " + splitted[1] + "\n")
+		f = open('res/' + splitted[0], 'a')
+		f.write(file + " " + splitted[1] + " " + splitted[2] + " " + splitted[3] + " " + str(int(splitted[3])-best[exact_filename]) + " " + str((float(splitted[3])-float(best[exact_filename]))/float(best[exact_filename])) +"\n")
 		f.close()	
