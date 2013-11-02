@@ -475,7 +475,6 @@ int main(int argc, char** argv) {
 	double result_std = 0.0;
 	double steps_avg = 0.0;
 	double std_steps = 0.0;
-	double prev_time = 0.0;
 	
 	double time = doExperiment(1, greedy_2opt, std, result, result_avg, result_std, steps_avg, std_steps );
 	cout << "greedy " << time << " " << std << " " << result << " " << result_avg << " " << result_std << " " << length << " "  << steps_avg << " "  << std_steps << " " << endl;
