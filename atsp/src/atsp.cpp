@@ -14,6 +14,7 @@
 #include <cstdio>
 #include <vector>
 #include <cmath>
+#include <cstring>
 
 int* best;
 int* current;
@@ -419,9 +420,42 @@ void random_experiment() {
 }
 
 
+
+void do_first_vs_last(algorytmT algorytm, string name) {
+	cout << "Start first vs best experiment" << endl;
+	vector<double> start_results;
+	vector<double> best_results;
+	for (int i = 0; i < 200; i++) {
+		reset();
+		start_results.push_back(best_result);
+		algorytm();
+		best_results.push_back(best_result);
+	}
+	cout << "out " << name << "-start ";
+	for (unsigned int i= 0; i < start_results.size(); i++) {
+		cout << start_results[i] << " ";
+	}
+	cout << endl;
+	cout << "out " << name << "-best ";
+	for (unsigned int i= 0; i < best_results.size(); i++) {
+		cout << best_results[i] << " ";
+	}
+	cout << endl;
+}
+
 int main(int argc, char** argv) {
 	init(argv[1]);
-
+	if (argc >= 2) {
+		if (strcmp(argv[2], "steepest") == 0) {
+			do_first_vs_last(steepest_2opt, "steepest");
+			exit(0);
+		}
+		if (strcmp(argv[2], "greedy") == 0) {
+			do_first_vs_last(greedy_2opt, "greedy");
+			exit(0);
+		}
+	}
+	init(argv[1]);
 	double std;
 	int result; 
 	double result_avg = 0.0;

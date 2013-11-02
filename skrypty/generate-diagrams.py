@@ -18,6 +18,9 @@ def listFiles(dir):
             result.append(os.path.join(dir, item))
     return result
 
+def load_best_vs_first_data():
+    return
+
 def load_data(files):
     data = {}
     for file in files:
