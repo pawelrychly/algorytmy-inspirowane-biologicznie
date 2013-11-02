@@ -138,6 +138,45 @@ def generate_time_diagram(files):
     plt.ylabel('czas dzialania algorytmu')
     plt.savefig(destination_dir+'time.pdf')
 
+def generate_time_diagram(files):
+    plt.figure(get_figure_counter())
+    data = load_data(files)
+    for series_name, series in data.iteritems():
+        x = [value['dimnesions'] for value in series ]
+        y = [value['time'] for value in series]
+        std = [value['std_time'] for value in series]
+
+        plt.errorbar(x, y,
+                     yerr=std,
+                     marker='o',
+                     label=series_name,
+                     capsize=5,
+                     linestyle='-')
+    plt.legend()
+    plt.xlabel('rozmiar instancji problemu')
+    plt.ylabel('czas dzialania algorytmu')
+    plt.savefig(destination_dir+'time.pdf')
+
+def generate_efficiency_diagram(files):
+    plt.figure(get_figure_counter())
+    data = load_data(files)
+    for series_name, series in data.iteritems():
+        x = [value['dimnesions'] for value in series ]
+        y = [value['optimum_distance_avg_result'] / value['time'] for value in series]
+        #std = [value['std_time'] for value in series]
+
+        plt.errorbar(x, y,
+                     #yerr=std,
+                     marker='o',
+                     label=series_name,
+                     capsize=5,
+                     linestyle='-')
+    plt.legend()
+    plt.xlabel('rozmiar instancji problemu')
+    plt.ylabel('srednia odleglosc od optimum / czas dzialania algorytmu')
+    plt.savefig(destination_dir+'efficiency.pdf')
+
+
 
 
 def generate_diagrams():
@@ -148,6 +187,7 @@ def generate_diagrams():
     generate_distance_from_optimum_diagram_best(files)
     generate_distance_from_optimum_diagram_best_normalized(files)
     generate_time_diagram(files)
+    generate_efficiency_diagram(files)
 generate_diagrams()
     #matplotlib.savefig('foo.pdf')
 #def temp():
