@@ -147,6 +147,7 @@ def generate_diagrams():
     generate_distance_from_optimum_diagram_avg_normalized(files)
     generate_distance_from_optimum_diagram_best(files)
     generate_distance_from_optimum_diagram_best_normalized(files)
+    generate_time_diagram(files)
 generate_diagrams()
     #matplotlib.savefig('foo.pdf')
 #def temp():
