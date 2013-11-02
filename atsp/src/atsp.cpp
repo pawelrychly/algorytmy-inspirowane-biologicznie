@@ -22,6 +22,7 @@ int** mat;
 int length = 0;
 int best_result = 0;
 float time_of_walker = 1;
+int number_of_steps = 0;
 
 using namespace std;
 typedef void( * algorytmT )();
@@ -113,6 +114,7 @@ int** read_data(string filename, int &dimension) {
 
 // makes "in place" random array permutation
 void permuteTab(int* tab, int len) {
+
     int swap_index = 0;
     int tmp;
 
@@ -128,6 +130,7 @@ void permuteTab(int* tab, int len) {
 
 void init(char* path) {
 	srand(time(NULL));
+	number_of_steps = 0;
 	int l = 0;
 	mat = read_data(path, l);
 	length = l;
@@ -150,17 +153,20 @@ int getTotalPathLength(int* tab){
 }
 
 void reset() {
+
 	for(int i = 0; i < length; i++) {
 		best[i] = i;
 		current[i] = i;
 		candidate[i] = 0;
 	}
 	permuteTab(current, length);
+	number_of_steps = 0;
 	best_result = getTotalPathLength(current);
 }
 
 void swap(int i, int j) {
 //zapewnic zeby candidate == old
+	number_of_steps++;
 	for (int k=0; k < length; k++) {
 		candidate[k] = current[k];
 	}
@@ -352,14 +358,14 @@ void steepest_2opt(){
 
 double average(vector<double> v)
 {      double sum=0;
-       for(int i=0;i<v.size();i++)
+       for(unsigned int i=0;i<v.size();i++)
                sum+=v[i];
        return (double)sum/v.size();
 }
 double std_dev(vector<double> v, double ave)
 {
        double E=0;
-       for(int i=0;i<v.size();i++)
+       for(unsigned int i=0;i<v.size();i++)
                E+=(v[i] - ave)*(v[i] - ave);
        return sqrt(1.0/v.size()*E);
 }
@@ -368,14 +374,17 @@ double std_dev(vector<double> v, double ave)
 
 
 // main function of experiments
-double doExperiment(double accuracy, algorytmT algorytm, double &std, int &best) {
+double doExperiment(double accuracy, algorytmT algorytm, double &std, int &best, double &result_avg, double &result_std, double &steps_avg, double &std_steps) {
 	double prec = 1.0;
 	clock_t start;
 	double prev_measure = 0.0;
 	double measure = 0.0;
+	vector<double> times;
 	vector<double> results;
-	int result = 0;
-	best = 999999;
+	vector<double> number_of_steps_list;
+
+	//int result = 0;
+	best = 99999999;
 
 	start = clock(); // bie¿¹cy czas systemowy w ms
 	int i = 0;
@@ -383,18 +392,25 @@ double doExperiment(double accuracy, algorytmT algorytm, double &std, int &best)
 		//example function
 		reset();
 		algorytm();
-		if(best_result < best)
+		if(best_result < best){
 			best = best_result;
+		}
+		results.push_back((double)best_result);
 
 		measure = ((double) (clock() - start))/CLOCKS_PER_SEC;
-		results.push_back(measure - prev_measure);
+		times.push_back(measure - prev_measure);
+		number_of_steps_list.push_back((double) number_of_steps);
 		prev_measure = measure;
 		i++;
 	} while((measure < prec/accuracy) || (i <= 10));
 	//long m =(long)(measure);
 	//double result = (double) measure / i;
-	std = std_dev(results, average(results));
-	return average(results);
+	std = std_dev(times, average(times));
+	result_avg = average(results);
+	result_std = std_dev(results, result_avg);
+	steps_avg = average(number_of_steps_list);
+	std_steps = std_dev(number_of_steps_list, steps_avg);
+	return average(times);
 }
 
 void random_experiment() {
@@ -408,17 +424,22 @@ int main(int argc, char** argv) {
 
 	double std;
 	int result; 
-
-	double time = doExperiment(1, greedy_2opt, std, result);
-	cout << "Greedy " << time << " " << std << " " << result << endl;
-	time = doExperiment(1, steepest_2opt, std, result);
-	cout << "Steepest " << time << " " << std << " " << result <<  endl;
-	//time_of_walker = time;
-	time = doExperiment(1, random_walker_2opt, std, result);
-	cout << "RandomWalker " << time << " " << std << " " << result << endl;
-	time = doExperiment(1, nearest_neighbour, std, result);
-	cout << "NearestNeighbor " << time << " " << std << " " << result << endl;
-	time = doExperiment(1, random_experiment, std, result);
-	cout << "Random " << time << " " << std << " " << result << endl;
+	double result_avg = 0.0;
+	double result_std = 0.0;
+	double steps_avg = 0.0;
+	double std_steps = 0.0;
+	double prev_time = 0.0;
+	double time = doExperiment(1, greedy_2opt, std, result, result_avg, result_std, steps_avg, std_steps );
+	cout << "greedy " << time << " " << std << " " << result << " " << result_avg << " " << result_std << " " << length << " "  << steps_avg << " "  << std_steps << " " << endl;
+	prev_time = time;
+	time = doExperiment(1, steepest_2opt, std, result, result_avg, result_std, steps_avg, std_steps );
+	cout << "steepest " << time << " " << std << " " << result << " " << result_avg << " " << result_std << " " << length << " " << steps_avg << " "  << std_steps << " " << endl;
+	time_of_walker = (time + prev_time) / 2.0;
+	time = doExperiment(1, random_walker_2opt, std, result, result_avg, result_std, steps_avg, std_steps );
+	cout << "random-walker " << time << " " << std << " " << result << " " << result_avg << " " << result_std << " " << length << " " << steps_avg << " "  << std_steps << " " << endl;
+	time = doExperiment(1, nearest_neighbour, std, result, result_avg, result_std, steps_avg, std_steps );
+	cout << "nearest-neighbour " << time << " " << std << " " << result << " " << result_avg << " " << result_std << " " << length << " " << steps_avg << " "  << std_steps << " " << endl;
+	time = doExperiment(1, random_experiment, std, result, result_avg, result_std, steps_avg, std_steps );
+	cout << "random " << time << " " << std << " " << result << " " << result_avg << " " << result_std << " " << length << " " << steps_avg << " "  << std_steps << " " << endl;
 	return 0;
 }

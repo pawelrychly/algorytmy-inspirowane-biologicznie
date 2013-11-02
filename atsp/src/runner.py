@@ -10,7 +10,7 @@ def listFiles(dir):
 
 
 def runProgram(test_file):
-	p = subprocess.Popen(['./a.out', test_file], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+	p = subprocess.Popen(['../Debug/atsp.exe', test_file], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 	out, err = p.communicate()
 	return out.split("\n")
 
@@ -33,6 +33,7 @@ for file in listFiles('../data-atsp/'):
 			continue
 		print line
 		splitted = line.split(" ")
-		f = open('res/' + splitted[0], 'a')
-		f.write(file + " " + splitted[1] + " " + splitted[2] + " " + splitted[3] + " " + str(int(splitted[3])-best[exact_filename]) + " " + str((float(splitted[3])-float(best[exact_filename]))/float(best[exact_filename])) +"\n")
+		f = open('res/' + splitted[0] + '.txt', 'a')
+		f.write(file + " " + splitted[1] + " " + splitted[2] + " " + splitted[3] + " " + str(int(splitted[3])-best[exact_filename]) + " " + str((float(splitted[3])-float(best[exact_filename]))/float(best[exact_filename])) + " " + splitted[4] + " " + str(float(splitted[4])-float(best[exact_filename])) + " " + str((float(splitted[4])-float(best[exact_filename]))/float(best[exact_filename])) + " " + splitted[5] + " " + splitted[6] +" \n")
+		#file + " " + splitted[1] + " " + splitted[2] + " " + splitted[3] + " " + str(int(splitted[3])-best[exact_filename]) + " " + str((float(splitted[3])-float(best[exact_filename]))/float(best[exact_filename])) + " " + splitted[4] + " " + str(int(splitted[4])-best[exact_filename]) + " " + str((float(splitted[4])-float(best[exact_filename]))/float(best[exact_filename])) + " " + splitted[5] +"\n"
 		f.close()	
