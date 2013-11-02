@@ -280,6 +280,31 @@ void random_walker_2opt() {
 	}
 }
 
+
+void random_experiment() {
+	clock_t start;
+	double measure = 0.0;
+	start = clock();
+	int result = 0;
+	int best_result = 99999;
+
+	do {
+		permuteTab(candidate, length);
+		result = getTotalPathLength(candidate);
+		if(result < best_result) {
+			copy_arrays(candidate, best, length);
+			best_result = result;
+		}
+		measure = ((double) (clock() - start))/CLOCKS_PER_SEC;
+	} while(measure < time_of_walker);
+
+	for(int k=0; k<length; k++) {
+		current[k] = best[k];
+	}
+}
+
+
+
 bool isInArray(int value, int* tab, int size) {
 	bool isInArray = false;
 	for(int i=0; i<size; i++) {
@@ -331,13 +356,6 @@ void steepest_2opt(){
 					best[k] = candidate[k];
 				}
 			}
-			//showArray(current, length);
-			//showArray(candidate, length);
-
-			//cout << "eval: " << eval << " eval_old: " << eval_old << " value: " << value << " delta: " << delta << "best_r: " << best_result<< endl;
-
-			//showArray(candidate, length);
-			//cin.get();
 		}
 	}
 	if (delta < 0) {
@@ -414,11 +432,6 @@ double doExperiment(double accuracy, algorytmT algorytm, double &std, int &best,
 	return average(times);
 }
 
-void random_experiment() {
-	permuteTab(best, length);
-	best_result = getTotalPathLength(best);
-}
-
 
 
 void do_first_vs_last(algorytmT algorytm, string name) {
@@ -463,17 +476,28 @@ int main(int argc, char** argv) {
 	double steps_avg = 0.0;
 	double std_steps = 0.0;
 	double prev_time = 0.0;
+	
 	double time = doExperiment(1, greedy_2opt, std, result, result_avg, result_std, steps_avg, std_steps );
 	cout << "greedy " << time << " " << std << " " << result << " " << result_avg << " " << result_std << " " << length << " "  << steps_avg << " "  << std_steps << " " << endl;
-	prev_time = time;
+	//prev_time = time;
+	time_of_walker = time;
+	time = doExperiment(1, random_walker_2opt, std, result, result_avg, result_std, steps_avg, std_steps );
+	cout << "random-walker-greedy " << time << " " << std << " " << result << " " << result_avg << " " << result_std << " " << length << " " << steps_avg << " "  << std_steps << " " << endl;
+	time = doExperiment(1, random_experiment, std, result, result_avg, result_std, steps_avg, std_steps );
+	cout << "random-greedy " << time << " " << std << " " << result << " " << result_avg << " " << result_std << " " << length << " " << steps_avg << " "  << std_steps << " " << endl;
+	
+
 	time = doExperiment(1, steepest_2opt, std, result, result_avg, result_std, steps_avg, std_steps );
 	cout << "steepest " << time << " " << std << " " << result << " " << result_avg << " " << result_std << " " << length << " " << steps_avg << " "  << std_steps << " " << endl;
-	time_of_walker = (time + prev_time) / 2.0;
+	time_of_walker = time;
 	time = doExperiment(1, random_walker_2opt, std, result, result_avg, result_std, steps_avg, std_steps );
-	cout << "random-walker " << time << " " << std << " " << result << " " << result_avg << " " << result_std << " " << length << " " << steps_avg << " "  << std_steps << " " << endl;
+	cout << "random-walker-steepest " << time << " " << std << " " << result << " " << result_avg << " " << result_std << " " << length << " " << steps_avg << " "  << std_steps << " " << endl;
+	time = doExperiment(1, random_experiment, std, result, result_avg, result_std, steps_avg, std_steps );
+	cout << "random-steepest " << time << " " << std << " " << result << " " << result_avg << " " << result_std << " " << length << " " << steps_avg << " "  << std_steps << " " << endl;
+	
+
 	time = doExperiment(1, nearest_neighbour, std, result, result_avg, result_std, steps_avg, std_steps );
 	cout << "nearest-neighbour " << time << " " << std << " " << result << " " << result_avg << " " << result_std << " " << length << " " << steps_avg << " "  << std_steps << " " << endl;
-	time = doExperiment(1, random_experiment, std, result, result_avg, result_std, steps_avg, std_steps );
-	cout << "random " << time << " " << std << " " << result << " " << result_avg << " " << result_std << " " << length << " " << steps_avg << " "  << std_steps << " " << endl;
+
 	return 0;
 }
