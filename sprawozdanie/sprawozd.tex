@@ -8,7 +8,7 @@
 \usepackage{graphicx,color} %include pdf's (and png's for raster graphics... avoid raster graphics!) 
 \usepackage{url} 
 \usepackage[pdftex,hyperfootnotes=false,pdfborder={0 0 0}]{hyperref} %za wszystkimi pakietami; pdfborder nie wszedzie tak samo zaimplementowane bo specyfikacja nieprecyzyjna; pod miktex'em po prostu nie widac wtedy ramek
-
+\usepackage{float}
 
 \input{_ustawienia.tex}
 
@@ -28,7 +28,126 @@ Problem komiwoja¿era opisywany jest czêsto jako problem wêdrownego sprzedawcy za
 \section{Operator s¹siedztwa}
 W zaimplementowanych przez nas algorytmach wykorzystaliœmy operator s¹siedztwa 2-opt. W podejœciu tym, ka¿da permutacja oznaczaj¹ca kolejnoœæ odwiedzanych wierzcho³ków w grafie s¹siaduje z permutacjami utworzonymi poprzez zamianê miejscami dwóch liczb w sekwencji.  
 
+\section{Porównanie dzia³ania 4 algorytmów i rodzajów s¹siedztw na wszystkich instancjach problemów}
+\subsection{Odleg³oœæ od optimum.}
+\begin{figure}[H]
+\begin{center}
+\includegraphics[width=1.0\textwidth]{diagrams/best_results_distance_from_optimum2.pdf}
+\end{center}
+\caption{Odleg³oœci od optimum najlepszych znalezionych rozwi¹zañ dla kilku przyk³adowych algorytmów. }
+\label{fig-schemat}
+\end{figure}
 
+\begin{figure}[H]
+\begin{center}
+\includegraphics[width=1.0\textwidth]{diagrams/avarage_results_distance_from_optimum2.pdf}
+\end{center}
+\caption{Odleg³oœci od optimum wartoœci œrednich ze znalezionych rozwi¹zañ dla kilku przyk³adowych algorytmów. }
+\label{fig-schemat}
+\end{figure}
+
+
+\subsection{Porównanie czasu dzia³ania algorytmów.}
+\begin{figure}[H]
+\begin{center}
+\includegraphics[width=1.0\textwidth]{diagrams/time.pdf}
+\end{center}
+\caption{Porównanie œrednich czasów dzia³ania algorytmów. }
+\label{fig-schemat}
+\end{figure}
+
+\subsection{Porównanie efektywnoœci algorytmów.}
+\begin{figure}[H]
+\begin{center}
+\includegraphics[width=1.0\textwidth]{diagrams/efficiency2log.pdf}
+\end{center}
+\caption{Porównanie efektywnoœci algorytmów.}
+\label{fig-schemat}
+\end{figure}
+
+\subsection{Porównanie œredniej liczby kroków dla algorytmów steepest i greedy.}
+\begin{figure}[H]
+\begin{center}
+\includegraphics[width=1.0\textwidth]{diagrams/avg_steps.pdf}
+\end{center}
+\caption{Porównanie œredniej liczby kroków algorytmów greedy i steepest w zale¿noœci od rozmiaru instancji problemu.}
+\label{fig-schemat}
+\end{figure}
+
+\section{Jakoœæ rozwi¹zania koñcowego w zale¿noœci od jakoœci rozwi¹zania pocz¹tkowego.}
+\subsection{Instancja p43.}
+
+
+\begin{figure}[H]
+\begin{center}
+\includegraphics[width=1.0\textwidth]{diagrams/best-vs-first/p43-greedy-efficiency.pdf}
+\end{center}
+\caption{Odleg³oœci od optimum rozwi¹zañ koñcowych w zale¿noœci od odleg³oœci od optimum rozwi¹zañ pocz¹tkowych. Instancja p43 - algorytm Greedy}
+\label{fig-schemat}
+\end{figure}
+
+\begin{figure}[H]
+\begin{center}
+\includegraphics[width=1.0\textwidth]{diagrams/best-vs-first/p43-steepest-efficiency.pdf}
+\end{center}
+\caption{Odleg³oœci od optimum rozwi¹zañ koñcowych w zale¿noœci od odleg³oœci od optimum rozwi¹zañ pocz¹tkowych. Instancja p43 - algorytm Steepest}
+\label{fig-schemat}
+\end{figure}
+
+\subsection{Instancja ft53.}
+
+\begin{figure}[H]
+\begin{center}
+\includegraphics[width=1.0\textwidth]{diagrams/best-vs-first/ft53-greedy-efficiency.pdf}
+\end{center}
+\caption{Odleg³oœci od optimum rozwi¹zañ koñcowych w zale¿noœci od odleg³oœci od optimum rozwi¹zañ pocz¹tkowych. Instancja ft53 - algorytm Greedy}
+\label{fig-schemat}
+\end{figure}
+
+\begin{figure}[H]
+\begin{center}
+\includegraphics[width=1.0\textwidth]{diagrams/best-vs-first/ft53-steepest-efficiency.pdf}
+\end{center}
+\caption{Odleg³oœci od optimum rozwi¹zañ koñcowych w zale¿noœci od odleg³oœci od optimum rozwi¹zañ pocz¹tkowych. Instancja ft53 - algorytm Steepest}
+\label{fig-schemat}
+\end{figure}
+
+
+\subsection{Instancja ry48p.}
+
+\begin{figure}[H]
+\begin{center}
+\includegraphics[width=1.0\textwidth]{diagrams/best-vs-first/ry48p-greedy-efficiency.pdf}
+\end{center}
+\caption{Odleg³oœci od optimum rozwi¹zañ koñcowych w zale¿noœci od odleg³oœci od optimum rozwi¹zañ pocz¹tkowych. Instancja ry48p - algorytm Greedy}
+\label{fig-schemat}
+\end{figure}
+
+\begin{figure}[H]
+\begin{center}
+\includegraphics[width=1.0\textwidth]{diagrams/best-vs-first/ry48p-steepest-efficiency.pdf}
+\end{center}
+\caption{Odleg³oœci od optimum rozwi¹zañ koñcowych w zale¿noœci od odleg³oœci od optimum rozwi¹zañ pocz¹tkowych. Instancja ry48p - algorytm Steepest}
+\label{fig-schemat}
+\end{figure}
+
+\section{Zale¿noœæ œrednich i najlepszych rozwi¹zañ od liczby restartów algorytmu. }
+
+\begin{figure}[H]
+\begin{center}
+%\includegraphics[width=1.0\textwidth]{diagrams/ry48p-steepest-efficiency.pdf}
+\end{center}
+\caption{Zale¿noœæ œrednich i najlepszych rozwi¹zañ od liczby restartów algorytmu}
+\label{fig-schemat}
+\end{figure}
+
+\section{Obiektywna ocena podobieñstwa znajdowanych rozwi¹zañ lokalnie optymalnych dla dwóch wybranych instancji oraz ocena ich podobieñstwa do optimum globalnego}
+
+\section{Wnioski}
+
+\section{Napotkane trudnoœci}
+
+\section{Uzasadnienie wprowadzanych ulepszeñ, propozycje udoskonaleñ i ich spodziewane efekty}
 
 %%%%%%%%%%%%%%%% literatura %%%%%%%%%%%%%%%%
 

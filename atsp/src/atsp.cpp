@@ -438,7 +438,7 @@ void do_first_vs_last(algorytmT algorytm, string name) {
 	cout << "Start first vs best experiment" << endl;
 	vector<double> start_results;
 	vector<double> best_results;
-	for (int i = 0; i < 200; i++) {
+	for (int i = 0; i < 400; i++) {
 		reset();
 		start_results.push_back(best_result);
 		algorytm();

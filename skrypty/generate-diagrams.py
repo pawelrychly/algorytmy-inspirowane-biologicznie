@@ -216,9 +216,9 @@ def generate_time_diagram(files, log=""):
 
     fontP = FontProperties()
     fontP.set_size('small')
-    plt.legend(prop = fontP)
+    plt.legend(loc = 2, prop = fontP)
     plt.xlabel('rozmiar instancji problemu')
-    plt.ylabel('czas dzialania algorytmu')
+    plt.ylabel('sredni czas dzialania algorytmu')
     plt.savefig(destination_dir+'time' + log +  '.pdf')
 
 
@@ -244,6 +244,29 @@ def generate_efficiency_diagram(files, log=""):
     plt.xlabel('rozmiar instancji problemu')
     plt.ylabel('srednia odleglosc od optimum / czas dzialania algorytmu')
     plt.savefig(destination_dir+'efficiency' + log +'.pdf')
+
+def generate_efficiency2_diagram(files, log=""):
+    plt.figure(get_figure_counter())
+    if log == "log":
+        plt.yscale(log)
+    data = load_data(files)
+    for series_name, series in data.iteritems():
+        x = [value['dimnesions'] for value in series ]
+        y = [1.0 /(value['optimum_distance2_avg_result'] * value['time']) for value in series]
+        #std = [value['std_time'] for value in series]
+
+        plt.errorbar(x, y,
+                     #yerr=std,
+                     marker=get_marker_style(),
+                     label=series_name,
+                     capsize=5,
+                     linestyle= get_line_style())
+    fontP = FontProperties()
+    fontP.set_size('small')
+    plt.legend(prop = fontP)
+    plt.xlabel('rozmiar instancji problemu')
+    plt.ylabel('1 / (srednia odleglosc od optimum * czas dzialania algorytmu)')
+    plt.savefig(destination_dir+'efficiency2' + log +'.pdf')
 
 
 def generate_best_vs_first_diagram():
@@ -302,21 +325,23 @@ def generate_diagrams():
     print files
 
     #normal
-    generate_distance_from_optimum_diagram_avg(files)
-    generate_distance_from_optimum_diagram_avg_normalized(files)
-    generate_distance_from_optimum_diagram_best(files)
-    generate_distance_from_optimum_diagram_best_normalized(files)
-    generate_time_diagram(files)
-    generate_efficiency_diagram(files)
-    generate_avg_steps_diagram(files)
+    #generate_distance_from_optimum_diagram_avg(files)
+    #generate_distance_from_optimum_diagram_avg_normalized(files)
+    #generate_distance_from_optimum_diagram_best(files)
+    #generate_distance_from_optimum_diagram_best_normalized(files)
+    #generate_time_diagram(files)
+    #generate_efficiency_diagram(files)
+    #generate_efficiency2_diagram(files)
+    #generate_avg_steps_diagram(files)
     #log
-    generate_distance_from_optimum_diagram_avg(files, log="log")
-    generate_distance_from_optimum_diagram_avg_normalized(files, log = "log")
-    generate_distance_from_optimum_diagram_best(files, log = "log")
-    generate_distance_from_optimum_diagram_best_normalized(files, log = "log")
-    generate_time_diagram(files, log = "log")
-    generate_efficiency_diagram(files, log = "log")
-    generate_avg_steps_diagram(files, log = "log")
+    #generate_distance_from_optimum_diagram_avg(files, log="log")
+    #generate_distance_from_optimum_diagram_avg_normalized(files, log = "log")
+    #generate_distance_from_optimum_diagram_best(files, log = "log")
+    #generate_distance_from_optimum_diagram_best_normalized(files, log = "log")
+    #generate_time_diagram(files, log = "log")
+    #generate_efficiency_diagram(files, log = "log")
+    #generate_efficiency2_diagram(files, log = "log")
+    #generate_avg_steps_diagram(files, log = "log")
 
 
     generate_best_vs_first_diagram()
