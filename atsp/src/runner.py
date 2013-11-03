@@ -71,7 +71,7 @@ def default():
 			#file + " " + splitted[1] + " " + splitted[2] + " " + splitted[3] + " " + str(int(splitted[3])-best[exact_filename]) + " " + str((float(splitted[3])-float(best[exact_filename]))/float(best[exact_filename])) + " " + splitted[4] + " " + str(int(splitted[4])-best[exact_filename]) + " " + str((float(splitted[4])-float(best[exact_filename]))/float(best[exact_filename])) + " " + splitted[5] +"\n"
 			f.close()
 	
-			
+# python runner.py 2 [file-name] [steepest|greedy]			
 if len(sys.argv) >= 2 and sys.argv[1] == "2":
 	
 	alg = sys.argv[3]
