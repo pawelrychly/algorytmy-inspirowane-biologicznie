@@ -37,7 +37,7 @@ def best_vs_start(file, alg = "steepest"):
 			for i in range(2, len(splitted)-1):
 				value = value + splitted[i] + " "
 				efficiency = efficiency + str(float(splitted[i])-best[exact_filename]) + " " 
-				efficiency2 = efficiency2 + str((float(splitted[4])-float(best[exact_filename]))/float(best[exact_filename])) + " "
+				efficiency2 = efficiency2 + str((float(splitted[i])-float(best[exact_filename]))/float(best[exact_filename])) + " "
 				
 			value += " \n"
 			efficiency += " \n"
