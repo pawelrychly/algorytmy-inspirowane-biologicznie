@@ -37,7 +37,6 @@ W zaimplementowanych przez nas algorytmach wykorzystaliœmy operator s¹siedztwa 2
 \caption{Odleg³oœci od optimum najlepszych znalezionych rozwi¹zañ dla kilku przyk³adowych algorytmów. }
 \label{fig-schemat}
 \end{figure}
-
 \begin{figure}[H]
 \begin{center}
 \includegraphics[width=1.0\textwidth]{diagrams/avarage_results_distance_from_optimum2.pdf}
@@ -45,6 +44,8 @@ W zaimplementowanych przez nas algorytmach wykorzystaliœmy operator s¹siedztwa 2
 \caption{Odleg³oœci od optimum wartoœci œrednich ze znalezionych rozwi¹zañ dla kilku przyk³adowych algorytmów. }
 \label{fig-schemat}
 \end{figure}
+
+Jak widaæ na za³¹czonych wykresach w kontekœcie wzglêdnej odleg³oœci od optimum ( liczonej jako odleg³oœæ najlepszego wyniku od optimum podzielonego przez optimum ) algorytmy greedy i steepest maj¹ bardzo zbli¿one rezultaty. Najgorszymi natomiast okaza³y siê byæ algorytmy losowe, zwracaj¹ce losow¹ permutacjê, dzia³aj¹ce tak d³ugo jak odpowiednio greedy i steepest. Widzimy wiêc, ¿e proste heurystyki wypadaj¹ znacznie gorzej ni¿ podejœcia greedy i steepest.
 
 
 \subsection{Porównanie czasu dzia³ania algorytmów.}
@@ -55,6 +56,9 @@ W zaimplementowanych przez nas algorytmach wykorzystaliœmy operator s¹siedztwa 2
 \caption{Porównanie œrednich czasów dzia³ania algorytmów. }
 \label{fig-schemat}
 \end{figure}
+
+Jednak¿e dobre rezultaty obarczone s¹ d³ugimi czasami dzia³ania algorytmów greedy i steepest. Wszystkie proste Heurystyki maj¹ niewielki wp³yw rozmiaru instancji na czas dzia³ania. Natomiast w greedym i steepeœcie rozmiar odgrywa kluczow¹ rolê w tej kwestii.
+
 
 \subsection{Porównanie efektywnoœci algorytmów.}
 \begin{figure}[H]
@@ -73,6 +77,8 @@ W zaimplementowanych przez nas algorytmach wykorzystaliœmy operator s¹siedztwa 2
 \caption{Porównanie œredniej liczby kroków algorytmów greedy i steepest w zale¿noœci od rozmiaru instancji problemu.}
 \label{fig-schemat}
 \end{figure}
+Rozbie¿noœæ tych wykresów jest doœæ oczywista. Steepest zawsze przegl¹da ca³e s¹siedztwo w poszukiwaniu optimum, greedy natomiast tylko jego fragment, próbuj¹æ uzyskaæ poprawê wyniku.
+
 
 \section{Jakoœæ rozwi¹zania koñcowego w zale¿noœci od jakoœci rozwi¹zania pocz¹tkowego.}
 \subsection{Instancja p43.}
@@ -131,15 +137,49 @@ W zaimplementowanych przez nas algorytmach wykorzystaliœmy operator s¹siedztwa 2
 \label{fig-schemat}
 \end{figure}
 
+
+Ka¿dy wykres pokazuje nam, ¿e zawsze koñczymy w rezultacie lepszym ni¿ ten z którego zaczynaliœmy podró¿. Dwa z trzech przypadkó³ nie daje ciekawych zale¿noœci, jednak¿e warto spojrzeæ na p43. Tworz¹ siê tam klastry œci¹gaj¹ce podobne rozwi¹zania pocz¹tkowe do podobnych rozwi¹zañ koñcowych.
+
 \section{Zale¿noœæ œrednich i najlepszych rozwi¹zañ od liczby restartów algorytmu. }
 
 \begin{figure}[H]
 \begin{center}
-%\includegraphics[width=1.0\textwidth]{diagrams/ry48p-steepest-efficiency.pdf}
+\includegraphics[width=1.0\textwidth]{diagrams/multisteepest_ftv44.png}
 \end{center}
-\caption{Zale¿noœæ œrednich i najlepszych rozwi¹zañ od liczby restartów algorytmu}
+\caption{Zale¿noœæ œrednich i najlepszych rozwi¹zañ od liczby restartów algorytmu - steepest dla pliku ftv44}
 \label{fig-schemat}
 \end{figure}
+
+
+\begin{figure}[H]
+\begin{center}
+\includegraphics[width=1.0\textwidth]{diagrams/multigreedy_ftv44.png}
+\end{center}
+\caption{Zale¿noœæ œrednich i najlepszych rozwi¹zañ od liczby restartów algorytmu - greedy dla pliku ftv44}
+\label{fig-schemat}
+\end{figure}
+
+
+
+
+\begin{figure}[H]
+\begin{center}
+\includegraphics[width=1.0\textwidth]{diagrams/multisteepest_p43.png}
+\end{center}
+\caption{Zale¿noœæ œrednich i najlepszych rozwi¹zañ od liczby restartów algorytmu - steepest dla pliku p43}
+\label{fig-schemat}
+\end{figure}
+
+\begin{figure}[H]
+\begin{center}
+\includegraphics[width=1.0\textwidth]{diagrams/multigreedy_p43.png}
+\end{center}
+\caption{Zale¿noœæ œrednich i najlepszych rozwi¹zañ od liczby restartów algorytmu - greedy dla pliku p43}
+\label{fig-schemat}
+\end{figure}
+
+
+
 
 \section{Obiektywna ocena podobieñstwa znajdowanych rozwi¹zañ lokalnie optymalnych dla dwóch wybranych instancji oraz ocena ich podobieñstwa do optimum globalnego}
 
