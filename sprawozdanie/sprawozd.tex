@@ -143,6 +143,45 @@ W zaimplementowanych przez nas algorytmach wykorzystaliœmy operator s¹siedztwa 2
 
 \section{Obiektywna ocena podobieñstwa znajdowanych rozwi¹zañ lokalnie optymalnych dla dwóch wybranych instancji oraz ocena ich podobieñstwa do optimum globalnego}
 
+\begin{table}[H]
+\begin{tabular}{|l|llllllllll|}
+\hline
+   & 1    & 2    & 3    & 4    & 5    & 6    & 7    & 8    & 9    & 10   \\ \hline
+1  & 1    & 0.15 & 0.16 & 0.14 & 0.17 & 0.16 & 0.16 & 0.16 & 0.15 & 0.13 \\
+2  & 0.15 & 1    & 0.16 & 0.18 & 0.15 & 0.17 & 0.16 & 0.15 & 0.16 & 0.17 \\
+3  & 0.16 & 0.16 & 1    & 0.17 & 0.16 & 0.17 & 0.19 & 0.16 & 0.17 & 0.17 \\
+4  & 0.14 & 0.18 & 0.17 & 1    & 0.19 & 0.19 & 0.17 & 0.16 & 0.15 & 0.17 \\
+5  & 0.17 & 0.15 & 0.16 & 0.19 & 1    & 0.16 & 0.16 & 0.16 & 0.15 & 0.15 \\
+6  & 0.16 & 0.17 & 0.17 & 0.19 & 0.16 & 1    & 0.2  & 0.18 & 0.15 & 0.17 \\
+7  & 0.16 & 0.16 & 0.19 & 0.17 & 0.16 & 0.2  & 1    & 0.18 & 0.19 & 0.14 \\
+8  & 0.16 & 0.15 & 0.16 & 0.16 & 0.16 & 0.18 & 0.18 & 1    & 0.18 & 0.18 \\
+9  & 0.15 & 0.16 & 0.17 & 0.15 & 0.15 & 0.15 & 0.19 & 0.18 & 1    & 0.16 \\
+10 & 0.13 & 0.17 & 0.17 & 0.17 & 0.15 & 0.17 & 0.14 & 0.18 & 0.16 & 1    \\ \hline
+\end{tabular}
+\caption{Macierz podobieñstwa dziesiêciu rozwi¹zañ stanowi¹cych optima lokalne - zbiór rbg443}
+\label{fig-schemat}
+\end{table}
+
+\begin{table}[h]
+\begin{tabular}{|l|llllllllll|}
+\hline
+   & 1    & 2    & 3    & 4    & 5    & 6    & 7    & 8    & 9    & 10   \\ \hline
+1  & 1    & 0.17 & 0.17 & 0.15 & 0.16 & 0.18 & 0.15 & 0.16 & 0.16 & 0.17 \\
+2  & 0.17 & 1    & 0.16 & 0.13 & 0.16 & 0.17 & 0.17 & 0.15 & 0.16 & 0.15 \\
+3  & 0.17 & 0.16 & 1    & 0.16 & 0.2  & 0.18 & 0.17 & 0.15 & 0.17 & 0.17 \\
+4  & 0.15 & 0.13 & 0.16 & 1    & 0.17 & 0.15 & 0.19 & 0.18 & 0.16 & 0.17 \\
+5  & 0.16 & 0.16 & 0.2  & 0.17 & 1    & 0.17 & 0.17 & 0.15 & 0.17 & 0.14 \\
+6  & 0.18 & 0.17 & 0.18 & 0.15 & 0.17 & 1    & 0.15 & 0.15 & 0.17 & 0.15 \\
+7  & 0.15 & 0.17 & 0.17 & 0.19 & 0.17 & 0.15 & 1    & 0.14 & 0.16 & 0.16 \\
+8  & 0.16 & 0.15 & 0.15 & 0.18 & 0.15 & 0.15 & 0.14 & 1    & 0.16 & 0.17 \\
+9  & 0.16 & 0.16 & 0.17 & 0.16 & 0.17 & 0.17 & 0.16 & 0.16 & 1    & 0.17 \\
+10 & 0.17 & 0.15 & 0.17 & 0.17 & 0.14 & 0.15 & 0.16 & 0.17 & 0.17 & 1    \\ \hline
+\end{tabular}
+\caption{Macierz podobieñstwa dziesiêciu rozwi¹zañ stanowi¹cych optima lokalne - zbiór rbg403}
+\label{fig-schemat}
+\end{table}
+
+
 \section{Wnioski}
 
 \section{Napotkane trudnoœci}
