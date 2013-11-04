@@ -146,7 +146,7 @@ Rozbie¿noœæ tych wykresów jest doœæ oczywista. Steepest zawsze przegl¹da ca³e s¹
 \end{figure}
 
 
-Ka¿dy wykres pokazuje nam, ¿e zawsze koñczymy w rezultacie lepszym ni¿ ten z którego zaczynaliœmy podró¿. Dwa z trzech przypadkó³ nie daje ciekawych zale¿noœci, jednak¿e warto spojrzeæ na p43. Tworz¹ siê tam klastry œci¹gaj¹ce podobne rozwi¹zania pocz¹tkowe do podobnych rozwi¹zañ koñcowych.
+Ka¿dy wykres pokazuje nam, ¿e zawsze koñczymy w rezultacie lepszym ni¿ ten z którego zaczynaliœmy podró¿. Dwa z trzech przypadków nie daje ciekawych zale¿noœci, jednak¿e warto spojrzeæ na p43. Tworz¹ siê tam klastry œci¹gaj¹ce podobne rozwi¹zania pocz¹tkowe do podobnych rozwi¹zañ koñcowych.
 
 \section{Zale¿noœæ œrednich i najlepszych rozwi¹zañ od liczby restartów algorytmu. }
 
@@ -185,8 +185,6 @@ Ka¿dy wykres pokazuje nam, ¿e zawsze koñczymy w rezultacie lepszym ni¿ ten z któ
 \caption{Zale¿noœæ œrednich i najlepszych rozwi¹zañ od liczby restartów algorytmu - greedy dla pliku p43}
 \label{fig-schemat}
 \end{figure}
-
-Wykresy pokazuj¹ nam, ¿e sytuacja doœæ mocno zale¿y od zadanej instancji. W przypadku p43 ju¿ po kilku iteracjach osi¹gamy okolice optimum poni¿ej którego zejœæ nie mo¿na. W przypadku ftv44 mamy doœæ du¿e wahania rozwi¹zañ miêdzy s¹siednimi punktami ( wynikaj¹ce z faktu, ¿e rzadko trafiamy na dobry trop i wchodzimy w wartoœciowe œcie¿ki ). Dla wersji steepest w ftv44 widaæ mocny trend poprawy rozwi¹zania w przedziale od 1 do ok 100 uruchomieñ. Dla wiêkszych wartoœci nie da siê zaobserwowaæ ju¿ tak znacznych ró¿nic. W przypadku greedy ftv44 istnieje ci¹g³y trend polepszaj¹cy ju¿ istniej¹ce wyniki, jednak o mniejszym nachyleniu. Ponadto zawsze op³aca siê puœciæ kilka razy algorytm,  widaæ, ¿e wiêkszoœæ ( poza kilkoma pocz¹tkowymi ) najlepszymi rozwi¹zaniami jest zdecydowanie lepsza ni¿ œrednia arytmetyczn¹ wszystkich rozwi¹zañ w serii. Warto te¿ mieæ na uwadze, ¿e w pewnym momencie zyski zaczynaj¹ zdecydowanie maleæ, natomiast czas potrzebny na ponowne odpalenia algorytmów roœnie, przez co musimy siê zdecydowaæ na decyzjê jakoœæ vs czas.
 
 \section{Obiektywna ocena podobieñstwa znajdowanych rozwi¹zañ lokalnie optymalnych dla dwóch wybranych instancji}
 
@@ -234,8 +232,17 @@ Jak mo¿na zauwa¿yæ, podobieñstwo pomiêdzy znalezionymi rozwi¹zaniami jest niewie
 
 \section{Wnioski}
 
+\begin{itemize}
+\item[•]Algorytmy heurystyczne i losowe osi¹gaj¹ znacznie gorsze wyniki ni¿ algorytmy przeszukiwania lokalnego. Czas ich dzia³ania jest jednak znacznie mniej uzale¿niony od rozmiaru instancji problemu.
+
+\item[•]]Algorytmy greedy oraz steepest osi¹gaj¹ podobne wyniki. Algorytm greedy jest jednak du¿o bardziej efektywny. Liczba porównywanych przez niego rozwi¹zañ, roœnie wolniej wraz ze wzrostem rozmiaru instancji ni¿ w przypadku algorytmu steepest.
+
+\item[•]Stosunkowo dobre wyniki osi¹ga prosta heurystyka polegaj¹ca na budowaniu wyniku w oparciu o najbli¿szego s¹siada. Mimo, ¿e odleg³oœci rozwi¹zañ od optimum, s¹ znacznie wiêksze ni¿ w przypadku algorytmów steepest i greedy, czas dzia³ania tej heurystyki jest znacznie mniejszy ni¿ w przypadku tych algorytmów.  
+
+\item[•]Wielokrotne odpalanie algorytmów przeszukiwania lokalnego, zwiêksza szanse na znalezienie wyniku bli¿szego globalnemu optimum.
 
 
+\end{itemize}
 
 \section{Napotkane trudnoœci}
 
