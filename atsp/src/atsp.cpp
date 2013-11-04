@@ -15,6 +15,7 @@
 #include <vector>
 #include <cmath>
 #include <cstring>
+#include <iomanip>
 
 int* best;
 int* current;
@@ -142,6 +143,7 @@ void init(char* path) {
 	for(int i = 0; i < length; i++) {
 		current[i] = i;
 	}
+
 }
 
 // returns total length of path
@@ -433,6 +435,60 @@ double doExperiment(double accuracy, algorytmT algorytm, double &std, int &best,
 }
 
 
+double similarity(vector<int> v1, vector<int>v2) {
+	double pair = 0.0;
+	for (int i = 0; i < length; i++) {
+		int j = 0;
+		bool found = false;
+		while ((j < length) && (!found)){
+			if (v1[i] == v2[j]) {
+				found = true;
+				if (v1[(i+1)%length] == v2[(j+1)%length]){
+					pair++;
+				}
+			}
+			j++;
+		}
+	}
+	return pair / length;
+}
+
+void find_local_optimum_examples(algorytmT algorytm, string alg, string filename) {
+
+	vector<vector<int> > permutations;
+
+	for (int i = 0; i < 10; i++) {
+		vector<int> per;
+		//example function
+		reset();
+		algorytm();
+		for (int j = 0; j < length; j++) {
+			per.push_back(best[j]);
+		}
+		cout << i << ", ";
+		permutations.push_back(per);
+	}
+
+	ofstream myfile;
+
+	myfile.open("../src/similarity/results.txt",  ios::out | ios::app );
+	myfile.precision(2);
+	myfile << filename << " " << alg << endl;
+	cout << filename << " " << alg << endl;
+
+	double result[10][10];
+	for (int i = 0; i < 10; i++) {
+		for (int j = 0; j < 10; j++) {
+			result[i][j] = similarity(permutations[i], permutations[j]);
+			myfile <<  setw(5) <<  result[i][j] << "\t";
+		}
+		myfile << endl;
+	}
+	myfile << endl;
+
+	myfile.close();
+
+}
 
 void do_first_vs_last(algorytmT algorytm, string name) {
 	cout << "Start first vs best experiment" << endl;
@@ -457,8 +513,22 @@ void do_first_vs_last(algorytmT algorytm, string name) {
 }
 
 int main(int argc, char** argv) {
+
 	init(argv[1]);
 	if (argc >= 2) {
+		//atsp.cpp ../data-atsp/br17.atsp greedy|steepest local_optimum
+		if ((argc >= 3) && (strcmp(argv[3], "local_optimum") == 0)) {
+			cout << "local optimum" << endl;
+			if (strcmp(argv[2], "steepest") == 0) {
+				find_local_optimum_examples(steepest_2opt, "steepest", argv[1]);
+				exit(0);
+			}
+			if (strcmp(argv[2], "greedy") == 0) {
+				find_local_optimum_examples(steepest_2opt, "greedy", argv[1]);
+				exit(0);
+			}
+			exit(0);
+		}
 		if (strcmp(argv[2], "steepest") == 0) {
 			do_first_vs_last(steepest_2opt, "steepest");
 			exit(0);
@@ -468,7 +538,7 @@ int main(int argc, char** argv) {
 			exit(0);
 		}
 	}
-	init(argv[1]);
+	//init(argv[1]);
 	double std;
 	int result; 
 	double result_avg = 0.0;
