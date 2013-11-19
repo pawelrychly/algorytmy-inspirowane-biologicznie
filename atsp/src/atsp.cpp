@@ -456,7 +456,6 @@ void tabu_search(){
 	int max_number_of_candidates = prepare_tabu_structures(tabu_list, neighbours_evals);
 	int* best_candidate = NULL;
 	int empty_steps = 0;
-	//problem z porównaniem z najlepszym wynikiem.
 	while (!stop_condition) {
 		//candidates
 		for (int k=0; k < max_number_of_candidates; k++) {
@@ -466,7 +465,6 @@ void tabu_search(){
 			int eval_old = evaluateOnPositions(current, i, j);
 			int eval = evaluateOnPositions(candidate, i, j);
 			int value = eval - eval_old;
-			//cout << "value:" << value;
 			neighbours_evals[k][2] = value;
 		}
 		best_candidate = get_tabu_best_candidate(tabu_list, neighbours_evals, max_number_of_candidates, current_result);
@@ -497,85 +495,7 @@ void tabu_search(){
 			stop_condition = true;
 		}
 		update_tabu_list(tabu_list);
-		//cout <<endl <<  "empty steps" <<  empty_steps << ", best_result" << best_result << endl;
 	}
-
-
-
-	/*int index_of_last_candidate = 0;
-	reset();
-	best = current;
-	//int delta = 0;
-	//int value = 0;
-
-	bool stop_condition = false;
-	int steps_without_correction = 0;
-	int* chosen;
-	int correction = 0;
-
-
-
-
-
-	while (stop_condition == false) {
-		correction = 0;
-
-		for (int i = 0; i < length-1; i++ ) {
-			for(int j = i+1; j < length; j++) {
-				swap(i, j);
-				if (!is_in_tabu(candidate, tabu_list)) {
-					int* candidate_element = new int[length];
-					for(int l = 0; l < length; l++) {
-						candidate_element[l] = candidate[l];
-					}
-					candidates_list.push_back(candidate_element);
-				}
-			}
-		}
-		//cout << "candidates";
-		//for (int i = 0; i < length; i++) {
-		//	print_element(candidates_list[i]);
-		//	cout << endl;
-		//}
-		//cout << endl;
-
-		if (candidates_list.size() > 0) {
-			chosen = get_best_candidate(candidates_list);
-			int candidate_value = getTotalPathLength(chosen);
-			int old_value = getTotalPathLength(best);
-			if ( candidate_value < old_value) {
-
-
-				correction = old_value - candidate_value;
-				//cout <<"candidate_value<" << candidate_value << endl;
-
-				steps_without_correction = 0;
-				tabu_list.push_back(chosen);
-				//cout << "tabu list length:" << tabu_list.size()<<endl;
-				best = chosen;
-				current = chosen;
-				if (tabu_list.size() > tabu_size) {
-					tabu_list.pop_front();
-
-				}
-			}
-			if (correction == 0) {
-				//cout<<"inc:" << steps_without_correction<< " " << candidate_value << " " << old_value <<endl;
-				steps_without_correction++;
-			}
-		} else {
-
-			steps_without_correction=100;
-			cout<<"inc:" << steps_without_correction<<endl;
-		}
-		//std::cout << correction << ": "<< steps_without_correction << std::endl;
-		if (steps_without_correction >= 100) {
-
-			best_result = getTotalPathLength(best);
-			stop_condition = true;
-			return;
-		}
-	}*/
 	return;
 
 }
@@ -792,18 +712,11 @@ int main(int argc, char** argv) {
 	double steps_avg = 0.0;
 	double std_steps = 0.0;
 
-	//tabu_search();
-	double time = doExperiment(1, tabu_search, std, result, result_avg, result_std, steps_avg, std_steps );
-	cout << "tabu " << time << " " << std << " " << result << " " << result_avg << " " << result_std << " " << length << " " << steps_avg << " "  << std_steps << " " << endl;
 
-	time = doExperiment(1, greedy_2opt, std, result, result_avg, result_std, steps_avg, std_steps );
-	cout << "greedy " << time << " " << std << " " << result << " " << result_avg << " " << result_std << " " << length << " "  << steps_avg << " "  << std_steps << " " << endl;
-
-	/*
 	double time = doExperiment(1, greedy_2opt, std, result, result_avg, result_std, steps_avg, std_steps );
 	cout << "greedy " << time << " " << std << " " << result << " " << result_avg << " " << result_std << " " << length << " "  << steps_avg << " "  << std_steps << " " << endl;
 	//prev_time = time;
-	time_of_walker = time;
+	/*time_of_walker = time;
 	time = doExperiment(1, random_walker_2opt, std, result, result_avg, result_std, steps_avg, std_steps );
 	cout << "random-walker-greedy " << time << " " << std << " " << result << " " << result_avg << " " << result_std << " " << length << " " << steps_avg << " "  << std_steps << " " << endl;
 	time = doExperiment(1, random_experiment, std, result, result_avg, result_std, steps_avg, std_steps );
@@ -822,5 +735,9 @@ int main(int argc, char** argv) {
 	time = doExperiment(1, nearest_neighbour, std, result, result_avg, result_std, steps_avg, std_steps );
 	cout << "nearest-neighbour " << time << " " << std << " " << result << " " << result_avg << " " << result_std << " " << length << " " << steps_avg << " "  << std_steps << " " << endl;
 */
+	time = doExperiment(1, tabu_search, std, result, result_avg, result_std, steps_avg, std_steps );
+	cout << "tabu " << time << " " << std << " " << result << " " << result_avg << " " << result_std << " " << length << " " << steps_avg << " "  << std_steps << " " << endl;
+
+
 	return 0;
 }
