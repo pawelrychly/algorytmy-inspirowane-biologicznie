@@ -16,6 +16,7 @@
 #include <cmath>
 #include <cstring>
 #include <iomanip>
+#include <deque>
 
 int* best;
 int* current;
@@ -25,6 +26,7 @@ int length = 0;
 int best_result = 0;
 float time_of_walker = 1;
 int number_of_steps = 0;
+
 
 using namespace std;
 typedef void( * algorytmT )();
@@ -339,6 +341,235 @@ void nearest_neighbour() {
 
 
 
+
+
+//elitarna lista kandydatów, sprawdzenie wszystkich s¹siadów i wybór k=SIZEOFINSTANCE/10 najlepszych
+//druga opcja: sprawdzenie 20% s¹siadów i z tego wybór 20% najlepszych
+//d³ugoœæ listy tabu = SIZEOFINSTANCE/4
+//kryterium aspiracji - ruch tabu akceptowany jeœli poprawi wartoœæ funkcji celu
+//warunek stopu - jak w SA.
+
+//current
+//best_result
+//best
+
+void print_element(int* element){
+	for(int i = 0; i < length; i++) {
+		cout <<element[i] << ",";
+	}
+	cout << endl << endl;
+}
+
+
+int* get_best_candidate(std::vector<int*> candidates_list) {
+
+	int value = 0;
+	int min_value = 0;
+	int* c;
+
+	for (unsigned int i = 0; i < candidates_list.size(); i++) {
+		value = getTotalPathLength(candidates_list[i]);
+		if ((i == 0) || (value < min_value)) {
+
+			min_value = value;
+			c = candidates_list[i];
+		}
+	}
+
+	return c;
+}
+
+
+int prepare_tabu_structures(int** &tabu, int** &neighbour_evals){
+
+	int max_number_of_candidates=(length * (length-1))/2;
+	neighbour_evals = new int*[max_number_of_candidates];
+	tabu = new int*[length];
+	for (int i = 0; i < length; i++) {
+		tabu[i] = new int[length];
+		for(int j =0; j < length; j++) {
+			tabu[i][j] = 0;
+		}
+	}
+
+	int candidate_number = 0;
+	for (int i = 0; i < length-1; i++ ) {
+		for(int j = i+1; j < length; j++) {
+			neighbour_evals[candidate_number] = new int[3];
+			neighbour_evals[candidate_number][0] = i;
+			neighbour_evals[candidate_number][1] = j;
+			neighbour_evals[candidate_number][2] = 0;
+			candidate_number++;
+		}
+	}
+
+	return max_number_of_candidates;
+}
+
+void update_tabu_list(int** &tabu){
+	for(int i=0; i < length-1; i++) {
+		for(int j=i+1; j<length; j++) {
+			if (tabu[i][j] > 0) {
+				tabu[i][j]--;
+			}
+		}
+	}
+
+}
+
+int* get_tabu_best_candidate(int **&tabu_list, int** &neighbours, int max_number_of_candidates) {
+	int* best_tabu_candidate = NULL;
+	if (max_number_of_candidates > 0) {
+		int min_value = 32000;
+		for (int k = 0; k < max_number_of_candidates; k++) {
+			int i = neighbours[k][0];
+			int j = neighbours[k][1];
+			int delta = neighbours[k][2];
+			if ((delta < min_value) && (tabu_list[i][j] == 0)) {
+				min_value = neighbours[k][2];
+				best_tabu_candidate = neighbours[k];
+			}
+		}
+	}
+
+	return best_tabu_candidate;
+}
+
+
+void tabu_search(){
+	reset();
+	int current_result = best_result;
+	unsigned int tabu_size = length /4;
+	bool stop_condition = false;
+	int** tabu_list = NULL;
+	int** neighbours_evals = NULL;
+	int max_number_of_candidates = prepare_tabu_structures(tabu_list, neighbours_evals);
+	int* best_candidate = NULL;
+	int empty_steps = 0;
+	//problem z porównaniem z najlepszym wynikiem.
+	while (!stop_condition) {
+		//candidates
+		for (int k=0; k < max_number_of_candidates; k++) {
+			int i = neighbours_evals[k][0];
+			int j = neighbours_evals[k][1];
+			swap(i, j);
+			int eval_old = evaluateOnPositions(current, i, j);
+			int eval = evaluateOnPositions(candidate, i, j);
+			int value = eval - eval_old;
+			//cout << "value:" << value;
+			neighbours_evals[k][2] = value;
+		}
+		best_candidate = get_tabu_best_candidate(tabu_list, neighbours_evals, max_number_of_candidates);
+		if (best_candidate != NULL) {
+			//Ustaw liste tabu
+			int i = best_candidate[0];
+			int j = best_candidate[1];
+			int value = best_candidate[2];
+			swap(i, j);
+			for (int x=0; x < length; x++) {
+				current[x] = candidate[x];
+			}
+			current_result +=value;
+			tabu_list[i][j] = tabu_size;
+			if (current_result < best_result) {
+				empty_steps = 0;
+				for (int x = 0; x < length; x++) {
+					best[x] = current[x];
+				}
+				best_result = current_result;
+			} else {
+				empty_steps++;
+			}
+		} else {
+			empty_steps++;
+		}
+		if (empty_steps >= 100) {
+			stop_condition = true;
+		}
+		update_tabu_list(tabu_list);
+		//cout <<endl <<  "empty steps" <<  empty_steps << ", best_result" << best_result << endl;
+	}
+
+
+
+	/*int index_of_last_candidate = 0;
+	reset();
+	best = current;
+	//int delta = 0;
+	//int value = 0;
+
+	bool stop_condition = false;
+	int steps_without_correction = 0;
+	int* chosen;
+	int correction = 0;
+
+
+
+
+
+	while (stop_condition == false) {
+		correction = 0;
+
+		for (int i = 0; i < length-1; i++ ) {
+			for(int j = i+1; j < length; j++) {
+				swap(i, j);
+				if (!is_in_tabu(candidate, tabu_list)) {
+					int* candidate_element = new int[length];
+					for(int l = 0; l < length; l++) {
+						candidate_element[l] = candidate[l];
+					}
+					candidates_list.push_back(candidate_element);
+				}
+			}
+		}
+		//cout << "candidates";
+		//for (int i = 0; i < length; i++) {
+		//	print_element(candidates_list[i]);
+		//	cout << endl;
+		//}
+		//cout << endl;
+
+		if (candidates_list.size() > 0) {
+			chosen = get_best_candidate(candidates_list);
+			int candidate_value = getTotalPathLength(chosen);
+			int old_value = getTotalPathLength(best);
+			if ( candidate_value < old_value) {
+
+
+				correction = old_value - candidate_value;
+				//cout <<"candidate_value<" << candidate_value << endl;
+
+				steps_without_correction = 0;
+				tabu_list.push_back(chosen);
+				//cout << "tabu list length:" << tabu_list.size()<<endl;
+				best = chosen;
+				current = chosen;
+				if (tabu_list.size() > tabu_size) {
+					tabu_list.pop_front();
+
+				}
+			}
+			if (correction == 0) {
+				//cout<<"inc:" << steps_without_correction<< " " << candidate_value << " " << old_value <<endl;
+				steps_without_correction++;
+			}
+		} else {
+
+			steps_without_correction=100;
+			cout<<"inc:" << steps_without_correction<<endl;
+		}
+		//std::cout << correction << ": "<< steps_without_correction << std::endl;
+		if (steps_without_correction >= 100) {
+
+			best_result = getTotalPathLength(best);
+			stop_condition = true;
+			return;
+		}
+	}*/
+	return;
+
+}
+
 void steepest_2opt(){
 	//cout << "iteracja" << endl;
 
@@ -513,12 +744,14 @@ void do_first_vs_last(algorytmT algorytm, string name) {
 }
 
 int main(int argc, char** argv) {
-
 	init(argv[1]);
-	if (argc >= 2) {
+
+	if (argc >=3) {
 		//atsp.cpp ../data-atsp/br17.atsp greedy|steepest local_optimum
+
 		if ((argc >= 3) && (strcmp(argv[3], "local_optimum") == 0)) {
 			cout << "local optimum" << endl;
+
 			if (strcmp(argv[2], "steepest") == 0) {
 				find_local_optimum_examples(steepest_2opt, "steepest", argv[1]);
 				exit(0);
@@ -529,10 +762,13 @@ int main(int argc, char** argv) {
 			}
 			exit(0);
 		}
+
 		if (strcmp(argv[2], "steepest") == 0) {
+
 			do_first_vs_last(steepest_2opt, "steepest");
 			exit(0);
 		}
+
 		if (strcmp(argv[2], "greedy") == 0) {
 			do_first_vs_last(greedy_2opt, "greedy");
 			exit(0);
@@ -545,7 +781,15 @@ int main(int argc, char** argv) {
 	double result_std = 0.0;
 	double steps_avg = 0.0;
 	double std_steps = 0.0;
-	
+
+	//tabu_search();
+	double time = doExperiment(1, tabu_search, std, result, result_avg, result_std, steps_avg, std_steps );
+	cout << "tabu " << time << " " << std << " " << result << " " << result_avg << " " << result_std << " " << length << " " << steps_avg << " "  << std_steps << " " << endl;
+
+	time = doExperiment(1, greedy_2opt, std, result, result_avg, result_std, steps_avg, std_steps );
+	cout << "greedy " << time << " " << std << " " << result << " " << result_avg << " " << result_std << " " << length << " "  << steps_avg << " "  << std_steps << " " << endl;
+
+	/*
 	double time = doExperiment(1, greedy_2opt, std, result, result_avg, result_std, steps_avg, std_steps );
 	cout << "greedy " << time << " " << std << " " << result << " " << result_avg << " " << result_std << " " << length << " "  << steps_avg << " "  << std_steps << " " << endl;
 	//prev_time = time;
@@ -567,6 +811,6 @@ int main(int argc, char** argv) {
 
 	time = doExperiment(1, nearest_neighbour, std, result, result_avg, result_std, steps_avg, std_steps );
 	cout << "nearest-neighbour " << time << " " << std << " " << result << " " << result_avg << " " << result_std << " " << length << " " << steps_avg << " "  << std_steps << " " << endl;
-
+*/
 	return 0;
 }
