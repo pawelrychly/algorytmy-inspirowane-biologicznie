@@ -713,10 +713,13 @@ int main(int argc, char** argv) {
 	double std_steps = 0.0;
 
 
-	double time = doExperiment(1, greedy_2opt, std, result, result_avg, result_std, steps_avg, std_steps );
+	double time = doExperiment(1, tabu_search, std, result, result_avg, result_std, steps_avg, std_steps );
+	cout << "tabu " << time << " " << std << " " << result << " " << result_avg << " " << result_std << " " << length << " " << steps_avg << " "  << std_steps << " " << endl;
+	/*
+	time = doExperiment(1, greedy_2opt, std, result, result_avg, result_std, steps_avg, std_steps );
 	cout << "greedy " << time << " " << std << " " << result << " " << result_avg << " " << result_std << " " << length << " "  << steps_avg << " "  << std_steps << " " << endl;
 	//prev_time = time;
-	/*time_of_walker = time;
+	time_of_walker = time;
 	time = doExperiment(1, random_walker_2opt, std, result, result_avg, result_std, steps_avg, std_steps );
 	cout << "random-walker-greedy " << time << " " << std << " " << result << " " << result_avg << " " << result_std << " " << length << " " << steps_avg << " "  << std_steps << " " << endl;
 	time = doExperiment(1, random_experiment, std, result, result_avg, result_std, steps_avg, std_steps );
@@ -735,8 +738,7 @@ int main(int argc, char** argv) {
 	time = doExperiment(1, nearest_neighbour, std, result, result_avg, result_std, steps_avg, std_steps );
 	cout << "nearest-neighbour " << time << " " << std << " " << result << " " << result_avg << " " << result_std << " " << length << " " << steps_avg << " "  << std_steps << " " << endl;
 */
-	time = doExperiment(1, tabu_search, std, result, result_avg, result_std, steps_avg, std_steps );
-	cout << "tabu " << time << " " << std << " " << result << " " << result_avg << " " << result_std << " " << length << " " << steps_avg << " "  << std_steps << " " << endl;
+
 
 
 	return 0;
