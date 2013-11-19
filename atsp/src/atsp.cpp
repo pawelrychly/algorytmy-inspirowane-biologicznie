@@ -528,7 +528,6 @@ void simulated_annealing() {
 		for(int j=i+1; j<length; j++) {
 			if(doBreak)
 				continue;
-
 			swap(i, j);
 
 			int eval_current = evaluateOnPositions(current, i, j);
@@ -540,20 +539,20 @@ void simulated_annealing() {
 					current[k] = candidate[k];
 				}
 				turnsWithoutMove = 0;	
-				best_result += diff;
+				best_result = getTotalPathLength(current);			
 				simulated_annealing();
 			} else {
-				if(lottery(-1.0*diff/currentTemperature)) { // jesli przeszlismy test prawdop. to przesuwamy sie, ale nie poprawiamy wyniku na gorszy
+				if(diff != 0 && lottery(exp(-1.0*diff/currentTemperature))) { // jesli przeszlismy test prawdop. to przesuwamy sie, ale nie poprawiamy wyniku na gorszy
 					for(int k = 0; k<length; k++) {
 						current[k] = candidate[k];
 					}
-					turnsWithoutMove = 0;	
+					turnsWithoutMove = 0;
 					simulated_annealing();
 				} else {        // otherwise - zwiekszamy iterator braku zmian
 					turnsWithoutMove++;
 				}
 			}
-			if(turnsWithoutMove > 2000) {
+			if(turnsWithoutMove > 20000) {
 				doBreak = true;
 			}
 		}
