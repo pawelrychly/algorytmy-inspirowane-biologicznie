@@ -417,7 +417,15 @@ void update_tabu_list(int** &tabu){
 
 }
 
-int* get_tabu_best_candidate(int **&tabu_list, int** &neighbours, int max_number_of_candidates) {
+bool check_aspiration_criterion(int current_result, int value) {
+	current_result += value;
+	if (current_result < best_result) {
+		return true;
+	}
+	return false;
+}
+
+int* get_tabu_best_candidate(int **&tabu_list, int** &neighbours, int max_number_of_candidates, int current_result) {
 	int* best_tabu_candidate = NULL;
 	if (max_number_of_candidates > 0) {
 		int min_value = 32000;
@@ -425,7 +433,7 @@ int* get_tabu_best_candidate(int **&tabu_list, int** &neighbours, int max_number
 			int i = neighbours[k][0];
 			int j = neighbours[k][1];
 			int delta = neighbours[k][2];
-			if ((delta < min_value) && (tabu_list[i][j] == 0)) {
+			if ((delta < min_value) && ((tabu_list[i][j] == 0) || (check_aspiration_criterion(current_result, delta)))) {
 				min_value = neighbours[k][2];
 				best_tabu_candidate = neighbours[k];
 			}
@@ -434,6 +442,8 @@ int* get_tabu_best_candidate(int **&tabu_list, int** &neighbours, int max_number
 
 	return best_tabu_candidate;
 }
+
+
 
 
 void tabu_search(){
@@ -459,7 +469,7 @@ void tabu_search(){
 			//cout << "value:" << value;
 			neighbours_evals[k][2] = value;
 		}
-		best_candidate = get_tabu_best_candidate(tabu_list, neighbours_evals, max_number_of_candidates);
+		best_candidate = get_tabu_best_candidate(tabu_list, neighbours_evals, max_number_of_candidates, current_result);
 		if (best_candidate != NULL) {
 			//Ustaw liste tabu
 			int i = best_candidate[0];
