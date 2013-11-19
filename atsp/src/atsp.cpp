@@ -1,6 +1,6 @@
 //============================================================================
 // Name        : atsp.cpp
-// Author      : Pawe³ Rych³y Dawid Wiœniewski
+// Author      : PaweÂ³ RychÂ³y Dawid WiÅ“niewski
 // Version     :
 // Copyright   : Your copyright notice
 // Description : Hello World in C++, Ansi-style
@@ -343,10 +343,10 @@ void nearest_neighbour() {
 
 
 
-//elitarna lista kandydat�w, sprawdzenie wszystkich s�siad�w i wyb�r k=SIZEOFINSTANCE/10 najlepszych
-//druga opcja: sprawdzenie 20% s�siad�w i z tego wyb�r 20% najlepszych
-//d�ugo�� listy tabu = SIZEOFINSTANCE/4
-//kryterium aspiracji - ruch tabu akceptowany je�li poprawi warto�� funkcji celu
+//elitarna lista kandydatów, sprawdzenie wszystkich s¹siadów i wybór k=SIZEOFINSTANCE/10 najlepszych
+//druga opcja: sprawdzenie 20% s¹siadów i z tego wybór 20% najlepszych
+//d³ugoœæ listy tabu = SIZEOFINSTANCE/4
+//kryterium aspiracji - ruch tabu akceptowany jeœli poprawi wartoœæ funkcji celu
 //warunek stopu - jak w SA.
 
 //current
@@ -500,6 +500,68 @@ void tabu_search(){
 
 }
 
+
+bool lottery(double probability) {
+	int max = 1000;
+	int r = rand() % 1000;
+	if((double)r/(double)max < probability)
+		return true;
+	else return false;
+}
+
+
+double currentTemperature = 2;
+int turnsWithoutMove = 0;
+int annealingCycles = 0;
+
+void simulated_annealing() {
+	int delta = 0;
+	int value = 0;
+	bool doBreak = false;
+	annealingCycles++;
+
+	if(annealingCycles % 1000 == 0) {
+		currentTemperature *= 0.9;
+	}
+
+	for(int i=0; i< length-1; i++) {
+		for(int j=i+1; j<length; j++) {
+			if(doBreak)
+				continue;
+
+			swap(i, j);
+
+			int eval_current = evaluateOnPositions(current, i, j);
+			int eval_candidate = evaluateOnPositions(candidate, i, j);
+			int diff = eval_candidate - eval_current;			
+			if(diff < 0) { // jeśli mamy poprawe - to ok zbieramy poprawke
+				for(int k = 0; k<length; k++) {
+					best[k] = candidate[k];
+					current[k] = candidate[k];
+				}
+				turnsWithoutMove = 0;	
+				best_result += diff;
+				simulated_annealing();
+			} else {
+				if(lottery(-1.0*diff/currentTemperature)) { // jesli przeszlismy test prawdop. to przesuwamy sie, ale nie poprawiamy wyniku na gorszy
+					for(int k = 0; k<length; k++) {
+						current[k] = candidate[k];
+					}
+					turnsWithoutMove = 0;	
+					simulated_annealing();
+				} else {        // otherwise - zwiekszamy iterator braku zmian
+					turnsWithoutMove++;
+				}
+			}
+			if(turnsWithoutMove > 2000) {
+				doBreak = true;
+			}
+		}
+	}
+}
+
+
+
 void steepest_2opt(){
 	//cout << "iteracja" << endl;
 
@@ -568,7 +630,7 @@ double doExperiment(double accuracy, algorytmT algorytm, double &std, int &best,
 	//int result = 0;
 	best = 99999999;
 
-	start = clock(); // bie¿¹cy czas systemowy w ms
+	start = clock(); // bieÂ¿Â¹cy czas systemowy w ms
 	int i = 0;
 	do {
 		//example function
@@ -712,9 +774,12 @@ int main(int argc, char** argv) {
 	double steps_avg = 0.0;
 	double std_steps = 0.0;
 
+	double time = doExperiment(1, simulated_annealing, std, result, result_avg, result_std, steps_avg, std_steps );
+	cout << "SA " << time << " " << std << " " << result << " " << result_avg << " " << result_std << " " << length << " " << steps_avg << " "  << std_steps << " " << endl;
+	
 
-	double time = doExperiment(1, tabu_search, std, result, result_avg, result_std, steps_avg, std_steps );
-	cout << "tabu " << time << " " << std << " " << result << " " << result_avg << " " << result_std << " " << length << " " << steps_avg << " "  << std_steps << " " << endl;
+	//double time = doExperiment(1, tabu_search, std, result, result_avg, result_std, steps_avg, std_steps );
+	//cout << "tabu " << time << " " << std << " " << result << " " << result_avg << " " << result_std << " " << length << " " << steps_avg << " "  << std_steps << " " << endl;
 	/*
 	time = doExperiment(1, greedy_2opt, std, result, result_avg, result_std, steps_avg, std_steps );
 	cout << "greedy " << time << " " << std << " " << result << " " << result_avg << " " << result_std << " " << length << " "  << steps_avg << " "  << std_steps << " " << endl;
