@@ -749,12 +749,14 @@ void do_first_vs_last(algorytmT algorytm, string name) {
 }
 
 int main(int argc, char** argv) {
+
 	init(argv[1]);
 
 	if (argc >=3) {
+
 		//atsp.cpp ../data-atsp/br17.atsp greedy|steepest local_optimum
 
-		if ((argc >= 3) && (strcmp(argv[3], "local_optimum") == 0)) {
+		if ((argc > 3) && (strcmp(argv[3], "local_optimum") == 0)) {
 			cout << "local optimum" << endl;
 
 			if (strcmp(argv[2], "steepest") == 0) {
@@ -796,6 +798,7 @@ int main(int argc, char** argv) {
 	time = doExperiment(1, tabu_search, std, result, result_avg, result_std, steps_avg, std_steps, evals_avg, std_evals );
 	cout << "tabu-search " << time << " " << std << " " << result << " " << result_avg << " " << result_std << " " << length << " " << steps_avg << " "  << std_steps << " " << evals_avg << " "  << std_evals << " "  << endl;
 */
+
 
 	double time = doExperiment(1, greedy_2opt, std, result, result_avg, result_std, steps_avg, std_steps, evals_avg, std_evals );
 	cout << "greedy " << time << " " << std << " " << result << " " << result_avg << " " << result_std << " " << length << " "  << steps_avg << " "  << std_steps << " " << evals_avg << " "  << std_evals << " "  << endl;

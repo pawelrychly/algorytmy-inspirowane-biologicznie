@@ -77,7 +77,9 @@ if len(sys.argv) >= 2 and sys.argv[1] == "2":
 	alg = sys.argv[3]
 	file = sys.argv[2]
 	print "alg: " + alg
+	print "best_vs_start"
 	best_vs_start(file, alg)
 else:
+	print "default"
 	default()
 	
