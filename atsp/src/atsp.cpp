@@ -790,6 +790,10 @@ int main(int argc, char** argv) {
 	double std_steps = 0.0;
 	double evals_avg = 0.0;
 	double std_evals = 0.0;
+
+	double time = doExperiment(1, tabu_search, std, result, result_avg, result_std, steps_avg, std_steps, evals_avg, std_evals );
+	cout << "tabu-search " << time << " " << std << " " << result << " " << result_avg << " " << result_std << " " << length << " " << steps_avg << " "  << std_steps << " " << evals_avg << " "  << std_evals << " "  << endl;
+
 /*
 	double time = doExperiment(1, simulated_annealing, std, result, result_avg, result_std, steps_avg, std_steps, evals_avg, std_evals );
 	cout << "sa " << time << " " << std << " " << result << " " << result_avg << " " << result_std << " " << length << " " << steps_avg << " "  << std_steps << " " << evals_avg << " "  << std_evals << " "  << endl;
@@ -800,12 +804,12 @@ int main(int argc, char** argv) {
 */
 
 
-	double time = doExperiment(1, greedy_2opt, std, result, result_avg, result_std, steps_avg, std_steps, evals_avg, std_evals );
+	/*double time = doExperiment(1, greedy_2opt, std, result, result_avg, result_std, steps_avg, std_steps, evals_avg, std_evals );
 	cout << "greedy " << time << " " << std << " " << result << " " << result_avg << " " << result_std << " " << length << " "  << steps_avg << " "  << std_steps << " " << evals_avg << " "  << std_evals << " "  << endl;
 
 	time = doExperiment(1, steepest_2opt, std, result, result_avg, result_std, steps_avg, std_steps, evals_avg, std_evals );
 	cout << "steepest " << time << " " << std << " " << result << " " << result_avg << " " << result_std << " " << length << " " << steps_avg << " "  << std_steps << " " << evals_avg << " "  << std_evals << " "  << endl;
-
+*/
 	//prev_time = time;
 	/*
 	time_of_walker = time;
