@@ -316,7 +316,7 @@ def generate_avg_steps_diagram(files, log=""):
         plt.yscale(log)
     data = load_data(files)
     for series_name, series in data.iteritems():
-        if series_name == 'steepest' or series_name == 'greedy':
+        if series_name == 'steepest' or series_name == 'greedy' or series_name == 'tabu-search' or series_name == 'sa':
             labels = [value['dimnesions'] for value in series ]
             x = [i for i in range(len(series))]
             y = [value['steps_avg'] for value in series]
@@ -344,7 +344,7 @@ def generate_avg_evals_diagram(files, log=""):
         plt.yscale(log)
     data = load_data(files)
     for series_name, series in data.iteritems():
-        if series_name == 'steepest' or series_name == 'greedy':
+        if series_name == 'steepest' or series_name == 'greedy' or series_name == 'tabu-search' or series_name == 'sa':
             labels = [value['dimnesions'] for value in series ]
             x = [i for i in range(len(series))]
             y = [value['evals_avg'] for value in series]

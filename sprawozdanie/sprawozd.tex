@@ -26,9 +26,11 @@
 \section{Wstêp}
 Problem komiwoja¿era opisywany jest czêsto jako problem wêdrownego sprzedawcy zamierzaj¹cego odwiedziæ pewien zbiór miast. Planuj¹c swoj¹ podró¿, usi³uje on znaleŸæ mo¿liwie najkrótsz¹ trasê, która koñczy³aby siê w punkcie startowym. Zak³ada siê, ¿e ka¿de miasto z wyj¹tkiem pocz¹tkowego, powinno zostaæ odwiedzone tylko jeden raz. Przyjmuje siê równie¿, ¿e ka¿da para miast, po³¹czona jest drog¹ o okreœlonej d³ugoœci.  Opis ten stanowi jedynie ilustracjê  ogólniejszego zagadnienia. Zapisuj¹c problem Komiwoja¿era w jêzyku teorii grafów, mo¿na zdefiniowaæ go, jako problem znajdowania takiego cyklu Hamiltona w pe³nym grafie wa¿onym, dla którego suma wag odwiedzonych krawêdzi jest minimalna. W tak zdefiniowanym problemie mo¿na wyró¿niæ Asymetryczny problem Komiwoja¿era (ATSP). Zak³ada siê w nim, ¿e odleg³oœæ pomiêdzy dwoma miastami A i B mo¿e byæ ró¿na w zale¿noœci od tego, czy sprzedawca przemieszcza siê z punktu A do B, czy te¿ w kierunku przeciwnym. Zarówno symetryczna jak i asymetryczna wersja problemu komiwoja¿era znalaz³a bardzo szerokie zastosowanie w praktyce. Jej wykorzystanie nie ogranicza siê jedynie do problemów zwi¹zanych z transportem. Problem komiwoja¿era stosowany jest miêdzy innymi w produkcji elektroniki, gdzie optymalizuje siê drogê lasera wypalaj¹cego obwody elektroniczne. W sieciach komputerowych zastosowany jest do optymalizacji tras routingu. Niestety opisywany problem, jest problemem o wyk³adniczej z³o¿onoœci obliczeniowej i nale¿y do klasy problemów NP-trudnych.
 \section{Operator s¹siedztwa}
-W zaimplementowanych przez nas algorytmach wykorzystaliœmy operator s¹siedztwa 2-opt. W podejœciu tym, ka¿da permutacja oznaczaj¹ca kolejnoœæ odwiedzanych wierzcho³ków w grafie s¹siaduje z permutacjami utworzonymi poprzez zamianê miejscami dwóch liczb w sekwencji.  
+W zaimplementowanych przez nas algorytmach wykorzystaliœmy operator s¹siedztwa 2-opt. W podejœciu tym, ka¿da permutacja oznaczaj¹ca kolejnoœæ odwiedzanych wierzcho³ków w grafie s¹siaduje z permutacjami utworzonymi poprzez zamianê miejscami dwóch liczb w sekwencji. Rozmiar s¹siedztwa (n), mo¿na obliczyæ za pomoc¹ wzoru:
+\[n = \frac{l * (l-1)}{ 2}\]
+gdzie l -- liczba wierzcho³ków  
 
-\section{Porównanie dzia³ania 4 algorytmów i rodzajów s¹siedztw na wszystkich instancjach problemów}
+\section{Porównanie dzia³ania 8 algorytmów i rodzajów s¹siedztw na wszystkich instancjach problemów}
 \subsection{Odleg³oœæ od optimum.}
 \begin{figure}[H]
 \begin{center}
@@ -44,7 +46,7 @@ W zaimplementowanych przez nas algorytmach wykorzystaliœmy operator s¹siedztwa 2
 \caption{Odleg³oœci od optimum wartoœci œrednich ze znalezionych rozwi¹zañ dla kilku przyk³adowych algorytmów. }
 \label{fig-schemat}
 \end{figure}
-
+ 
 Jak widaæ na za³¹czonych wykresach w kontekœcie wzglêdnej odleg³oœci od optimum ( liczonej jako odleg³oœæ najlepszego wyniku od optimum podzielonego przez optimum ) algorytmy greedy i steepest maj¹ bardzo zbli¿one rezultaty. Najgorszymi natomiast okaza³y siê byæ algorytmy losowe, zwracaj¹ce losow¹ permutacjê, dzia³aj¹ce tak d³ugo jak odpowiednio greedy i steepest. Widzimy wiêc, ¿e proste heurystyki wypadaj¹ znacznie gorzej ni¿ podejœcia greedy i steepest.
 
 
@@ -79,12 +81,20 @@ Zosta³a ona tak zaprojektowana aby efektywnoœæ by³a tym wiêksza im mniejsza jest
 
 Powy¿szy wykres zawiera porównanie efektywnoœci algorytmów. Jak mo¿na zauwa¿yæ najlepsz¹ efektywnoœæ osi¹gnê³y algorytmy greedy oraz heurystyka nearest neighbour. Najni¿sz¹ efektywnoœæ osi¹gnê³y algorytmy losowe. 
 
-\subsection{Porównanie œredniej liczby kroków dla algorytmów steepest i greedy.}
+\subsection{Porównanie œredniej liczby kroków oraz liczby ocenionych rozwi¹zañ dla algorytmów steepest, greedy, tabu search i symulowanego wy¿arzania.}
 \begin{figure}[H]
 \begin{center}
 \includegraphics[width=1.0\textwidth]{diagrams/avg_stepslog.pdf}
 \end{center}
 \caption{Porównanie œredniej liczby kroków algorytmów greedy i steepest w zale¿noœci od rozmiaru instancji problemu.}
+\label{fig-schemat}
+\end{figure}
+
+\begin{figure}[H]
+\begin{center}
+\includegraphics[width=1.0\textwidth]{diagrams/avg_evalslog.pdf}
+\end{center}
+\caption{Porównanie œredniej liczby ocen rozwi¹zañ  w zale¿noœci od rozmiaru instancji problemu -- Algorytmy steepest, greedy, symylowane wy¿arzanie oraz tabu search.}
 \label{fig-schemat}
 \end{figure}
 Rozbie¿noœæ tych wykresów jest doœæ oczywista. Steepest zawsze przegl¹da ca³e s¹siedztwo w poszukiwaniu optimum, greedy natomiast tylko jego fragment, próbuj¹æ uzyskaæ poprawê wyniku.

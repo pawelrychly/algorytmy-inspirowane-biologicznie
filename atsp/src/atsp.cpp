@@ -500,7 +500,7 @@ void tabu_search(){
 		} else {
 			empty_steps++;
 		}
-		if (empty_steps >= 100) {
+		if (empty_steps >= 2*length) {
 			stop_condition = true;
 		}
 		update_tabu_list(tabu_list);
