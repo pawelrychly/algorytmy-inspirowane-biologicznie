@@ -67,7 +67,7 @@ def default():
 			print line
 			splitted = line.split(" ")
 			f = open('res/' + splitted[0] + '.txt', 'a+')
-			f.write(file + " " + splitted[1] + " " + splitted[2] + " " + splitted[3] + " " + str(int(splitted[3])-best[exact_filename]) + " " + str((float(splitted[3])-float(best[exact_filename]))/float(best[exact_filename])) + " " + splitted[4] + " " + str(float(splitted[4])-float(best[exact_filename])) + " " + str((float(splitted[4])-float(best[exact_filename]))/float(best[exact_filename])) + " " + splitted[5] + " " + splitted[6] + " " + splitted[7] + " " + splitted[8] + " \n")
+			f.write(file + " " + splitted[1] + " " + splitted[2] + " " + splitted[3] + " " + str(int(splitted[3])-best[exact_filename]) + " " + str((float(splitted[3])-float(best[exact_filename]))/float(best[exact_filename])) + " " + splitted[4] + " " + str(float(splitted[4])-float(best[exact_filename])) + " " + str((float(splitted[4])-float(best[exact_filename]))/float(best[exact_filename])) + " " + splitted[5] + " " + splitted[6] + " " + splitted[7] + " " + splitted[8] + " " + splitted[9] + " " + splitted[10] + " \n")
 			#file + " " + splitted[1] + " " + splitted[2] + " " + splitted[3] + " " + str(int(splitted[3])-best[exact_filename]) + " " + str((float(splitted[3])-float(best[exact_filename]))/float(best[exact_filename])) + " " + splitted[4] + " " + str(int(splitted[4])-best[exact_filename]) + " " + str((float(splitted[4])-float(best[exact_filename]))/float(best[exact_filename])) + " " + splitted[5] +"\n"
 			f.close()
 	
@@ -77,7 +77,9 @@ if len(sys.argv) >= 2 and sys.argv[1] == "2":
 	alg = sys.argv[3]
 	file = sys.argv[2]
 	print "alg: " + alg
+	print "best_vs_start"
 	best_vs_start(file, alg)
 else:
+	print "default"
 	default()
 	

@@ -26,6 +26,7 @@ int length = 0;
 int best_result = 0;
 float time_of_walker = 1;
 int number_of_steps = 0;
+int number_of_evaluations = 0;
 
 
 using namespace std;
@@ -135,6 +136,7 @@ void permuteTab(int* tab, int len) {
 void init(char* path) {
 	srand(time(NULL));
 	number_of_steps = 0;
+	number_of_evaluations = 0;
 	int l = 0;
 	mat = read_data(path, l);
 	length = l;
@@ -166,12 +168,13 @@ void reset() {
 	}
 	permuteTab(current, length);
 	number_of_steps = 0;
+	number_of_evaluations = 0;
 	best_result = getTotalPathLength(current);
 }
 
 void swap(int i, int j) {
 //zapewnic zeby candidate == old
-	number_of_steps++;
+	//number_of_steps++;
 	for (int k=0; k < length; k++) {
 		candidate[k] = current[k];
 	}
@@ -181,6 +184,7 @@ void swap(int i, int j) {
 
 
 int evaluateOnPositions(int* tab, int i, int j){
+	number_of_evaluations++;
 	int prev_j = (j - 1) < 0 ? length-1 : (j-1);
 	int prev_i = (i - 1) < 0 ? length-1 : (i-1);
 	int next_j = (j + 1) % length;
@@ -239,6 +243,7 @@ void greedy_2opt() {
 		}
 		best_result += delta;
 		//showArray(current, length);
+		number_of_steps++;
 		greedy_2opt();
 	}
 
@@ -277,6 +282,7 @@ void random_walker_2opt() {
 		for (int l = 0; l < length; l++) {
 			current[l] = candidate[l];
 		}
+		number_of_steps++;
 		measure = ((double) (clock() - start))/CLOCKS_PER_SEC;
 	} while (measure < time_of_walker);
 	for(int k=0; k < length; k++) {
@@ -300,6 +306,7 @@ void random_experiment() {
 			best_result = result;
 		}
 		measure = ((double) (clock() - start))/CLOCKS_PER_SEC;
+		number_of_steps++;
 	} while(measure < time_of_walker);
 
 	for(int k=0; k<length; k++) {
@@ -337,6 +344,7 @@ void nearest_neighbour() {
 		best[k] = current_best_candidate;
 	}
 	best_result = getTotalPathLength(best);
+	number_of_steps++;
 }
 
 
@@ -457,6 +465,7 @@ void tabu_search(){
 	int* best_candidate = NULL;
 	int empty_steps = 0;
 	while (!stop_condition) {
+		number_of_steps++;
 		//candidates
 		for (int k=0; k < max_number_of_candidates; k++) {
 			int i = neighbours_evals[k][0];
@@ -491,7 +500,7 @@ void tabu_search(){
 		} else {
 			empty_steps++;
 		}
-		if (empty_steps >= 100) {
+		if (empty_steps >= 2*length) {
 			stop_condition = true;
 		}
 		update_tabu_list(tabu_list);
@@ -515,12 +524,15 @@ int turnsWithoutMove = 0;
 int annealingCycles = 0;
 
 void simulated_annealing() {
+	//int delta = 0;
+	//int value = 0;
+	bool doBreak = false;
 	annealingCycles++;
 
 	if(annealingCycles % 5000 == 0) {
 		currentTemperature *= 0.9;
 	}
-
+	number_of_steps++;
 	for(int i=0; i< length-1; i++) {
 		for(int j=i+1; j<length; j++) {
 			if(doBreak)
@@ -590,6 +602,7 @@ void steepest_2opt(){
 		best = temp;
 		best_result -= delta;*/
 		best_result += delta;
+		number_of_steps++;
 		steepest_2opt();
 	}
 
@@ -614,7 +627,7 @@ double std_dev(vector<double> v, double ave)
 
 
 // main function of experiments
-double doExperiment(double accuracy, algorytmT algorytm, double &std, int &best, double &result_avg, double &result_std, double &steps_avg, double &std_steps) {
+double doExperiment(double accuracy, algorytmT algorytm, double &std, int &best, double &result_avg, double &result_std, double &steps_avg, double &std_steps, double &evals_avg, double &std_evals) {
 	double prec = 1.0;
 	clock_t start;
 	double prev_measure = 0.0;
@@ -622,6 +635,7 @@ double doExperiment(double accuracy, algorytmT algorytm, double &std, int &best,
 	vector<double> times;
 	vector<double> results;
 	vector<double> number_of_steps_list;
+	vector<double> number_of_evals_list;
 
 	//int result = 0;
 	best = 99999999;
@@ -640,6 +654,7 @@ double doExperiment(double accuracy, algorytmT algorytm, double &std, int &best,
 		measure = ((double) (clock() - start))/CLOCKS_PER_SEC;
 		times.push_back(measure - prev_measure);
 		number_of_steps_list.push_back((double) number_of_steps);
+		number_of_evals_list.push_back((double) number_of_evaluations);
 		prev_measure = measure;
 		i++;
 	} while((measure < prec/accuracy) || (i <= 10));
@@ -650,6 +665,8 @@ double doExperiment(double accuracy, algorytmT algorytm, double &std, int &best,
 	result_std = std_dev(results, result_avg);
 	steps_avg = average(number_of_steps_list);
 	std_steps = std_dev(number_of_steps_list, steps_avg);
+	evals_avg = average(number_of_evals_list);
+	std_evals = std_dev(number_of_evals_list, evals_avg);
 	return average(times);
 }
 
@@ -732,12 +749,14 @@ void do_first_vs_last(algorytmT algorytm, string name) {
 }
 
 int main(int argc, char** argv) {
+
 	init(argv[1]);
 
 	if (argc >=3) {
+
 		//atsp.cpp ../data-atsp/br17.atsp greedy|steepest local_optimum
 
-		if ((argc >= 3) && (strcmp(argv[3], "local_optimum") == 0)) {
+		if ((argc > 3) && (strcmp(argv[3], "local_optimum") == 0)) {
 			cout << "local optimum" << endl;
 
 			if (strcmp(argv[2], "steepest") == 0) {
@@ -769,35 +788,48 @@ int main(int argc, char** argv) {
 	double result_std = 0.0;
 	double steps_avg = 0.0;
 	double std_steps = 0.0;
+	double evals_avg = 0.0;
+	double std_evals = 0.0;
 
-	double time = doExperiment(1, simulated_annealing, std, result, result_avg, result_std, steps_avg, std_steps );
-	cout << "SA " << time << " " << std << " " << result << " " << result_avg << " " << result_std << " " << length << " " << steps_avg << " "  << std_steps << " " << endl;
+	double time = doExperiment(1, tabu_search, std, result, result_avg, result_std, steps_avg, std_steps, evals_avg, std_evals );
+	cout << "tabu-search " << time << " " << std << " " << result << " " << result_avg << " " << result_std << " " << length << " " << steps_avg << " "  << std_steps << " " << evals_avg << " "  << std_evals << " "  << endl;
+
+/*
+	double time = doExperiment(1, simulated_annealing, std, result, result_avg, result_std, steps_avg, std_steps, evals_avg, std_evals );
+	cout << "sa " << time << " " << std << " " << result << " " << result_avg << " " << result_std << " " << length << " " << steps_avg << " "  << std_steps << " " << evals_avg << " "  << std_evals << " "  << endl;
 	
 
-	//double time = doExperiment(1, tabu_search, std, result, result_avg, result_std, steps_avg, std_steps );
-	//cout << "tabu " << time << " " << std << " " << result << " " << result_avg << " " << result_std << " " << length << " " << steps_avg << " "  << std_steps << " " << endl;
-	/*
-	time = doExperiment(1, greedy_2opt, std, result, result_avg, result_std, steps_avg, std_steps );
-	cout << "greedy " << time << " " << std << " " << result << " " << result_avg << " " << result_std << " " << length << " "  << steps_avg << " "  << std_steps << " " << endl;
+	time = doExperiment(1, tabu_search, std, result, result_avg, result_std, steps_avg, std_steps, evals_avg, std_evals );
+	cout << "tabu-search " << time << " " << std << " " << result << " " << result_avg << " " << result_std << " " << length << " " << steps_avg << " "  << std_steps << " " << evals_avg << " "  << std_evals << " "  << endl;
+*/
+
+
+	/*double time = doExperiment(1, greedy_2opt, std, result, result_avg, result_std, steps_avg, std_steps, evals_avg, std_evals );
+	cout << "greedy " << time << " " << std << " " << result << " " << result_avg << " " << result_std << " " << length << " "  << steps_avg << " "  << std_steps << " " << evals_avg << " "  << std_evals << " "  << endl;
+
+	time = doExperiment(1, steepest_2opt, std, result, result_avg, result_std, steps_avg, std_steps, evals_avg, std_evals );
+	cout << "steepest " << time << " " << std << " " << result << " " << result_avg << " " << result_std << " " << length << " " << steps_avg << " "  << std_steps << " " << evals_avg << " "  << std_evals << " "  << endl;
+*/
 	//prev_time = time;
+	/*
 	time_of_walker = time;
-	time = doExperiment(1, random_walker_2opt, std, result, result_avg, result_std, steps_avg, std_steps );
-	cout << "random-walker-greedy " << time << " " << std << " " << result << " " << result_avg << " " << result_std << " " << length << " " << steps_avg << " "  << std_steps << " " << endl;
-	time = doExperiment(1, random_experiment, std, result, result_avg, result_std, steps_avg, std_steps );
-	cout << "random-greedy " << time << " " << std << " " << result << " " << result_avg << " " << result_std << " " << length << " " << steps_avg << " "  << std_steps << " " << endl;
+	time = doExperiment(1, random_walker_2opt, std, result, result_avg, result_std, steps_avg, std_steps, evals_avg, std_evals );
+	cout << "random-walker-greedy " << time << " " << std << " " << result << " " << result_avg << " " << result_std << " " << length << " " << steps_avg << " "  << std_steps << " " <<  evals_avg << " "  << std_evals << " "  << endl;
+	time = doExperiment(1, random_experiment, std, result, result_avg, result_std, steps_avg, std_steps, evals_avg, std_evals );
+	cout << "random-greedy " << time << " " << std << " " << result << " " << result_avg << " " << result_std << " " << length << " " << steps_avg << " "  << std_steps << " "<< evals_avg << " "  << std_evals << " "  << endl;;
 	
 
-	time = doExperiment(1, steepest_2opt, std, result, result_avg, result_std, steps_avg, std_steps );
-	cout << "steepest " << time << " " << std << " " << result << " " << result_avg << " " << result_std << " " << length << " " << steps_avg << " "  << std_steps << " " << endl;
+	//time = doExperiment(1, steepest_2opt, std, result, result_avg, result_std, steps_avg, std_steps, evals_avg, std_evals );
+	//cout << "steepest " << time << " " << std << " " << result << " " << result_avg << " " << result_std << " " << length << " " << steps_avg << " "  << std_steps << " " << evals_avg << " "  << std_evals << " "  << endl;
 	time_of_walker = time;
-	time = doExperiment(1, random_walker_2opt, std, result, result_avg, result_std, steps_avg, std_steps );
-	cout << "random-walker-steepest " << time << " " << std << " " << result << " " << result_avg << " " << result_std << " " << length << " " << steps_avg << " "  << std_steps << " " << endl;
-	time = doExperiment(1, random_experiment, std, result, result_avg, result_std, steps_avg, std_steps );
-	cout << "random-steepest " << time << " " << std << " " << result << " " << result_avg << " " << result_std << " " << length << " " << steps_avg << " "  << std_steps << " " << endl;
+	time = doExperiment(1, random_walker_2opt, std, result, result_avg, result_std, steps_avg, std_steps, evals_avg, std_evals );
+	cout << "random-walker-steepest " << time << " " << std << " " << result << " " << result_avg << " " << result_std << " " << length << " " << steps_avg << " "  << std_steps << " " << evals_avg << " "  << std_evals << " "  << endl;
+	time = doExperiment(1, random_experiment, std, result, result_avg, result_std, steps_avg, std_steps, evals_avg, std_evals );
+	cout << "random-steepest " << time << " " << std << " " << result << " " << result_avg << " " << result_std << " " << length << " " << steps_avg << " "  << std_steps << " " << evals_avg << " "  << std_evals << " "  << endl;
 	
 
-	time = doExperiment(1, nearest_neighbour, std, result, result_avg, result_std, steps_avg, std_steps );
-	cout << "nearest-neighbour " << time << " " << std << " " << result << " " << result_avg << " " << result_std << " " << length << " " << steps_avg << " "  << std_steps << " " << endl;
+	time = doExperiment(1, nearest_neighbour, std, result, result_avg, result_std, steps_avg, std_steps, evals_avg, std_evals );
+	cout << "nearest-neighbour " << time << " " << std << " " << result << " " << result_avg << " " << result_std << " " << length << " " << steps_avg << " "  << std_steps << " " << evals_avg << " "  << std_evals << " "  << endl;
 */
 
 

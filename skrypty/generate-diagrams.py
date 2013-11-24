@@ -98,6 +98,8 @@ def load_data(files):
                                       'dimnesions' : int(line_splitted[10]),
                                       'steps_avg' : float(line_splitted[11]),
                                       'std_steps' : float(line_splitted[12]),
+                                      'evals_avg' : float(line_splitted[13]),
+                                      'std_evals' : float(line_splitted[14]),
                                       })
         data[series_name] = sorted(data[series_name], key=lambda k: k['dimnesions'], reverse=False)
     return data
@@ -314,7 +316,7 @@ def generate_avg_steps_diagram(files, log=""):
         plt.yscale(log)
     data = load_data(files)
     for series_name, series in data.iteritems():
-        if series_name == 'steepest' or series_name == 'greedy':
+        if series_name == 'steepest' or series_name == 'greedy' or series_name == 'tabu-search' or series_name == 'sa':
             labels = [value['dimnesions'] for value in series ]
             x = [i for i in range(len(series))]
             y = [value['steps_avg'] for value in series]
@@ -335,6 +337,34 @@ def generate_avg_steps_diagram(files, log=""):
     plt.ylabel('srednia liczba krokow algorytmu')
     plt.savefig(destination_dir+'avg_steps' + log + '.pdf')
 
+
+def generate_avg_evals_diagram(files, log=""):
+    plt.figure(get_figure_counter())
+    if log == "log":
+        plt.yscale(log)
+    data = load_data(files)
+    for series_name, series in data.iteritems():
+        if series_name == 'steepest' or series_name == 'greedy' or series_name == 'tabu-search' or series_name == 'sa':
+            labels = [value['dimnesions'] for value in series ]
+            x = [i for i in range(len(series))]
+            y = [value['evals_avg'] for value in series]
+            std = [value['std_evals'] for value in series]
+
+            plt.errorbar(x, y,
+                         yerr=std,
+                         marker=get_marker_style(),
+                         label=series_name,
+                         capsize=5,
+                         linestyle= get_line_style())
+            plt.xticks(x,labels)
+    fontP = FontProperties()
+    fontP.set_size('small')
+    plt.legend(loc = 2, prop = fontP)
+
+    plt.xlabel('rozmiar instancji problemu')
+    plt.ylabel('srednia liczba ocenionych rozwiazan')
+    plt.savefig(destination_dir+'avg_evals' + log + '.pdf')
+
 def generate_diagrams():
     files = listFiles('../atsp/src/res/')
     print files
@@ -348,6 +378,7 @@ def generate_diagrams():
     generate_efficiency_diagram(files)
     generate_efficiency2_diagram(files)
     generate_avg_steps_diagram(files)
+    generate_avg_evals_diagram(files)
     #log
     generate_distance_from_optimum_diagram_avg(files, log="log")
     generate_distance_from_optimum_diagram_avg_normalized(files, log = "log")
@@ -357,7 +388,7 @@ def generate_diagrams():
     generate_efficiency_diagram(files, log = "log")
     generate_efficiency2_diagram(files, log = "log")
     generate_avg_steps_diagram(files, log = "log")
-
+    generate_avg_evals_diagram(files, log = "log")
 
     generate_best_vs_first_diagram()
 
