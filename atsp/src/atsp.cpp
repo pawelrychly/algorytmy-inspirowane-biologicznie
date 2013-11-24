@@ -791,14 +791,14 @@ int main(int argc, char** argv) {
 	double evals_avg = 0.0;
 	double std_evals = 0.0;
 
-	double time = doExperiment(1, tabu_search, std, result, result_avg, result_std, steps_avg, std_steps, evals_avg, std_evals );
-	cout << "tabu-search " << time << " " << std << " " << result << " " << result_avg << " " << result_std << " " << length << " " << steps_avg << " "  << std_steps << " " << evals_avg << " "  << std_evals << " "  << endl;
+//	double time = doExperiment(1, tabu_search, std, result, result_avg, result_std, steps_avg, std_steps, evals_avg, std_evals );
+//	cout << "tabu-search " << time << " " << std << " " << result << " " << result_avg << " " << result_std << " " << length << " " << steps_avg << " "  << std_steps << " " << evals_avg << " "  << std_evals << " "  << endl;
 
-/*
+
 	double time = doExperiment(1, simulated_annealing, std, result, result_avg, result_std, steps_avg, std_steps, evals_avg, std_evals );
 	cout << "sa " << time << " " << std << " " << result << " " << result_avg << " " << result_std << " " << length << " " << steps_avg << " "  << std_steps << " " << evals_avg << " "  << std_evals << " "  << endl;
 	
-
+/*
 	time = doExperiment(1, tabu_search, std, result, result_avg, result_std, steps_avg, std_steps, evals_avg, std_evals );
 	cout << "tabu-search " << time << " " << std << " " << result << " " << result_avg << " " << result_std << " " << length << " " << steps_avg << " "  << std_steps << " " << evals_avg << " "  << std_evals << " "  << endl;
 */

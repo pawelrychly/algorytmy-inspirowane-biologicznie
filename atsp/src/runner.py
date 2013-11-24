@@ -13,8 +13,9 @@ def listFiles(dir):
 def runProgram(test_file, alg = "non"):
 	print "alg:" + alg
 	print test_file
-	p = subprocess.Popen(['../Debug/atsp.exe', test_file, alg], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+	p = subprocess.Popen(['./a.out', test_file, alg], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 	out, err = p.communicate()
+	print err
 	return out.split("\n")
 
 def best_vs_start(file, alg = "steepest"):
