@@ -510,17 +510,14 @@ bool lottery(double probability) {
 }
 
 
-double currentTemperature = 2;
+double currentTemperature = 20;
 int turnsWithoutMove = 0;
 int annealingCycles = 0;
 
 void simulated_annealing() {
-	int delta = 0;
-	int value = 0;
-	bool doBreak = false;
 	annealingCycles++;
 
-	if(annealingCycles % 1000 == 0) {
+	if(annealingCycles % 5000 == 0) {
 		currentTemperature *= 0.9;
 	}
 
