@@ -127,12 +127,20 @@ def generate_distance_from_optimum_diagram_avg(files, log = ""):
         plt.xticks(x, labels)
     fontP = FontProperties()
     fontP.set_size('small')
-    plt.legend(loc = 2, prop = fontP)
+    if log == "log":
+        plt.legend(loc = 4, prop = fontP)
+    else:
+        plt.legend(loc = 2, prop = fontP)
     plt.xlabel('rozmiar instancji problemu')
     plt.ylabel('usredniony wynik - optimum')
     plt.savefig(destination_dir+'avarage_results_distance_from_optimum' + log +'.pdf')
 
 def generate_distance_from_optimum_diagram_avg_normalized(files, log=""):
+    """
+
+    :param files:
+    :param log:
+    """
     plt.figure(get_figure_counter())
     if log == "log":
         plt.yscale(log)
@@ -150,7 +158,12 @@ def generate_distance_from_optimum_diagram_avg_normalized(files, log=""):
         plt.xticks(x, labels)
     fontP = FontProperties()
     fontP.set_size('small')
-    plt.legend(loc = 2, prop = fontP)
+    leg = plt.legend(loc = 4, prop = fontP)
+    leg.get_frame().set_alpha(0.5)
+    #if log == "log":
+
+    #else:
+    #    plt.legend(loc = 2, prop = fontP)
 
     plt.xlabel('rozmiar instancji')
     plt.ylabel('(usredniony wynik - optimum) / optimum')
@@ -175,7 +188,8 @@ def generate_distance_from_optimum_diagram_best(files, log=""):
         plt.xticks(x, labels)
     fontP = FontProperties()
     fontP.set_size('small')
-    plt.legend(loc = 2, prop = fontP)
+    leg = plt.legend(loc = 4, prop = fontP)
+    leg.get_frame().set_alpha(0.5)
 
 
     plt.xlabel('rozmiar instancji')
@@ -203,7 +217,8 @@ def generate_distance_from_optimum_diagram_best_normalized(files, log=""):
 
     fontP = FontProperties()
     fontP.set_size('small')
-    plt.legend(loc = 2, prop = fontP)
+    leg = plt.legend(loc = 4, prop = fontP)
+    leg.get_frame().set_alpha(0.5)
     plt.xlabel('rozmiar instancji')
     plt.ylabel('(najlepszy wynik - optimum) / optimum')
     plt.savefig(destination_dir+'best_results_distance_from_optimum2' + log +'.pdf')
@@ -228,7 +243,8 @@ def generate_time_diagram(files, log=""):
         plt.xticks(x, labels)
     fontP = FontProperties()
     fontP.set_size('small')
-    plt.legend(loc = 2, prop = fontP)
+    leg = plt.legend(loc = 2, prop = fontP)
+    leg.get_frame().set_alpha(0.5)
     plt.xlabel('rozmiar instancji problemu')
     plt.ylabel('sredni czas dzialania algorytmu')
     plt.savefig(destination_dir+'time' + log +  '.pdf')
@@ -279,7 +295,8 @@ def generate_efficiency2_diagram(files, log=""):
         plt.xticks(x, labels)
     fontP = FontProperties()
     fontP.set_size('small')
-    plt.legend(prop = fontP)
+    leg = plt.legend( prop = fontP)
+    leg.get_frame().set_alpha(0.5)
     plt.xlabel('rozmiar instancji problemu')
     plt.ylabel('1 / (znormalizowana odleglosc od optimum * czas dzialania algorytmu)')
     plt.savefig(destination_dir+'efficiency2' + log +'.pdf')
