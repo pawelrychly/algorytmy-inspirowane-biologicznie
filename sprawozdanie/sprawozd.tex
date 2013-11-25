@@ -47,10 +47,7 @@ gdzie l -- liczba wierzcho³ków
 \label{fig-schemat}
 \end{figure}
  
-Jak widaæ na za³¹czonych wykresach w kontekœcie wzglêdnej odleg³oœci od optimum ( liczonej jako odleg³oœæ najlepszego wyniku od optimum podzielonego przez optimum ) algorytmy greedy i steepest maj¹ bardzo zbli¿one rezultaty. Najlepsze wyniki osi¹gn¹³ algorytm Tabu Search. Znalezione przez niego permutacje, okaza³y siê najbli¿sze rozwi¹zaniu optymalnemu. Rezultaty osi¹gniête przez algorytm Simulated annealing (SA), œrednio by³y gorsze od tych znalezionych przez algorytmy Greedy i Steepest. Najlepsze rozwi¹zania znajdywane przez ten algorytm, by³y jednak porównywalne z algorytmem Tabu Search.   
-
-
-Najgorszymi natomiast okaza³y siê byæ algorytmy losowe, zwracaj¹ce losow¹ permutacjê, dzia³aj¹ce tak d³ugo jak odpowiednio greedy i steepest. Widzimy wiêc, ¿e proste heurystyki wypadaj¹ znacznie gorzej ni¿ podejœcia greedy i steepest.
+Jak widaæ na za³¹czonych wykresach w kontekœcie wzglêdnej odleg³oœci od optimum ( liczonej jako odleg³oœæ najlepszego wyniku od optimum podzielonego przez optimum ) algorytmy greedy i steepest maj¹ bardzo zbli¿one rezultaty. Najlepsze wyniki osi¹gn¹³ algorytm Tabu Search. Znalezione przez niego permutacje, okaza³y siê najbli¿sze rozwi¹zaniu optymalnemu. Rezultaty osi¹gniête przez algorytm Simulated annealing (SA), œrednio by³y gorsze od tych znalezionych przez algorytmy Greedy i Steepest. Najlepsze rozwi¹zania znajdywane przez ten algorytm, by³y jednak porównywalne z algorytmem Tabu Search.  Najgorszymi natomiast okaza³y siê byæ algorytmy losowe, zwracaj¹ce losow¹ permutacjê, dzia³aj¹ce tak d³ugo jak odpowiednio greedy i steepest. Widzimy wiêc, ¿e proste heurystyki wypadaj¹ znacznie gorzej ni¿ podejœcia greedy i steepest.
 
 
 
@@ -64,7 +61,9 @@ Najgorszymi natomiast okaza³y siê byæ algorytmy losowe, zwracaj¹ce losow¹ permut
 \label{fig-schemat}
 \end{figure}
 
-Jednak¿e dobre rezultaty obarczone s¹ d³ugimi czasami dzia³ania algorytmów greedy i steepest. Wszystkie proste Heurystyki maj¹ niewielki wp³yw rozmiaru instancji na czas dzia³ania. Natomiast w greedym i steepeœcie rozmiar odgrywa kluczow¹ rolê w tej kwestii.
+Jednak¿e dobre rezultaty obarczone s¹ d³ugimi czasami dzia³ania algorytmów Greedy, Steepest oraz Tabu Search. Wszystkie proste Heurystyki maj¹ niewielki wp³yw rozmiaru instancji na czas dzia³ania. Natomiast w przypadku wymienionych wczeœniej algorytmów rozmiar odgrywa kluczow¹ rolê w tej kwestii. Rozmiar instancji ma szczególnie du¿y wp³yw na czas dzia³ania algorytmu Tabu Search. W tym przypadku, algorytm realizuj¹c ka¿dy krok,  musi przeszukaæ ca³¹ listê Tabu, której rozmiar równie¿ jest zale¿ny od rozmiaru instancji (liczba elementów listy tabu jest równa liczbie wierzcho³ków podzielonej przez 4). Warto zwróciæ uwagê na stosunkowo niewielkie czasy dzia³ania algorytmu SA. 
+
+
 
 
 \subsection{Porównanie efektywnoœci algorytmów.}
@@ -84,7 +83,7 @@ Zosta³a ona tak zaprojektowana aby efektywnoœæ by³a tym wiêksza im mniejsza jest
 \label{fig-schemat}
 \end{figure}
 
-Powy¿szy wykres zawiera porównanie efektywnoœci algorytmów. Jak mo¿na zauwa¿yæ najlepsz¹ efektywnoœæ osi¹gnê³y algorytmy greedy oraz heurystyka nearest neighbour. Najni¿sz¹ efektywnoœæ osi¹gnê³y algorytmy losowe. 
+Powy¿szy wykres zawiera porównanie efektywnoœci algorytmów. Jak mo¿na zauwa¿yæ najlepsz¹ efektywnoœæ osi¹gnê³y algorytmy Greedy, oraz heurystyka nearest neighbour. Najni¿sz¹ efektywnoœæ osi¹gnê³y algorytmy losowe oraz (w przypadku ma³ych instancji problemu) algorytm SA. 
 
 \subsection{Porównanie œredniej liczby kroków oraz liczby ocenionych rozwi¹zañ dla algorytmów steepest, greedy, tabu search i symulowanego wy¿arzania.}
 \begin{figure}[H]
@@ -95,6 +94,8 @@ Powy¿szy wykres zawiera porównanie efektywnoœci algorytmów. Jak mo¿na zauwa¿yæ n
 \label{fig-schemat}
 \end{figure}
 
+Jak mo¿na zauwa¿yæ na wykresie, algorytmy Steepest oraz Greedy, wykonuj¹ najmniej kroków. W przypadku obu algorytmów, ich liczba ograniczona jest przez monotonicznoœæ przestrzeni rozwi¹zañ. Wiêksza liczba kroków, realizowana przez algorytm Greedy, spowodowana jest tym, ¿e jego rozwi¹zania wolniej zbiegaj¹ do lokalnego optimum. Algorytmy Tabu Search oraz SA, realizuj¹ wiêksz¹ liczbê kroków. Du¿y wp³yw na takie wyniki ma warunek stopu, ustalony dla algorytmów (liczba kroków algorytmu, bez poprawy wyniku). Dodatkowo, algorytmy te nie musz¹ zatrzymywaæ siê w lokalnych optimach.    
+
 \begin{figure}[H]
 \begin{center}
 \includegraphics[width=1.0\textwidth]{diagrams/avg_evalslog.pdf}
@@ -102,8 +103,8 @@ Powy¿szy wykres zawiera porównanie efektywnoœci algorytmów. Jak mo¿na zauwa¿yæ n
 \caption{Porównanie œredniej liczby ocen rozwi¹zañ  w zale¿noœci od rozmiaru instancji problemu -- Algorytmy steepest, greedy, symylowane wy¿arzanie oraz tabu search.}
 \label{fig-schemat}
 \end{figure}
-Rozbie¿noœæ tych wykresów jest doœæ oczywista. Steepest zawsze przegl¹da ca³e s¹siedztwo w poszukiwaniu optimum, greedy natomiast tylko jego fragment, próbuj¹æ uzyskaæ poprawê wyniku.
 
+Rozbie¿noœæ tych wykresów jest doœæ oczywista. Steepest zawsze przegl¹da ca³e s¹siedztwo w poszukiwaniu optimum, greedy natomiast tylko jego fragment, próbuj¹æ uzyskaæ poprawê wyniku. Algorytm Tabu Search, tworz¹c listê kandydatów ocenia podobnie jak algorytm Steepest, wszystkich swoich s¹siadów. Poniewa¿ algorytm Tabu Search realizuje œrednio wiêcej kroków ni¿ algorytm Steepest, w trakcie swojego dzia³ania dokonuje on wiêkszej liczby ocen rozwi¹zañ.   
 
 \section{Jakoœæ rozwi¹zania koñcowego w zale¿noœci od jakoœci rozwi¹zania pocz¹tkowego.}
 \subsection{Instancja p43.}
